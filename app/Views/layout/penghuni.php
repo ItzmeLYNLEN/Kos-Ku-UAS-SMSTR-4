@@ -19,10 +19,10 @@
                         <a class="nav-link" href="<?= base_url('penghuni/dashboard') ?>">Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Tagihan Saya</a>
+                        <a class="nav-link" href="<?= base_url('penghuni/tagihan') ?>">Tagihan Saya</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Komplain</a>
+                        <a class="nav-link" href="<?= base_url('penghuni/komplain') ?>">Komplain</a>
                     </li>
                 </ul>
                 <div class="d-flex">

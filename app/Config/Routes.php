@@ -43,6 +43,11 @@ $routes->group('admin', ['filter' => 'admin'], static function ($routes)
 $routes->group('penghuni', ['filter' => 'penghuni'], static function ($routes) 
 {
     $routes->get('dashboard', 'PenghuniController::index');
+
+    $routes->get('tagihan', 'PenghuniTagihanController::index');
+    $routes->get('komplain', 'PenghuniKomplainController::index');
+    $routes->get('komplain/create', 'PenghuniKomplainController::create');
+    $routes->post('komplain/store', 'PenghuniKomplainController::store');
 });
 
 $routes->get('/ganti-password', 'Auth::gantiPassword', ['filter' => 'penghuni']);
