@@ -22,7 +22,13 @@
                         <a class="nav-link" href="<?= base_url('admin/tipe-kamar') ?>">Tipe Kamar</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Data Kamar</a>
+                        <a class="nav-link" href="<?= base_url('admin/kamar') ?>">Data Kamar</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?= base_url('admin/penghuni') ?>">Data Penghuni</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?= base_url('admin/tagihan') ?>">Tagihan Kos</a>
                     </li>
                 </ul>
                 <div class="d-flex">

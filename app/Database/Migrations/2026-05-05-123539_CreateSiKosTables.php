@@ -68,6 +68,7 @@ class CreateSiKosTables extends Migration
         $this->forge->addField([
             'id_profil_penghuni' => ['type' => 'INT', 'constraint' => 11, 'unsigned' => true, 'auto_increment' => true],
             'id_pengguna'        => ['type' => 'INT', 'constraint' => 11, 'unsigned' => true],
+            'id_kamar'           => ['type' => 'INT', 'constraint' => 11, 'unsigned' => true, 'null' => true], // <-- Penambahan kolom id_kamar ada di sini
             'nama_lengkap'       => ['type' => 'VARCHAR', 'constraint' => '100'],
             'no_wa'              => ['type' => 'VARCHAR', 'constraint' => '20'],
             'email'              => ['type' => 'VARCHAR', 'constraint' => '100', 'null' => true],

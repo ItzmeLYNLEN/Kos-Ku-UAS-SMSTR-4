@@ -5,7 +5,6 @@ use CodeIgniter\Router\RouteCollection;
 /**
  * @var RouteCollection $routes
  */
-$routes->get('/', 'Home::index');
 $routes->get('/', 'Auth::index');
 $routes->get('login', 'Auth::index');
 $routes->post('login/process', 'Auth::process');
@@ -22,6 +21,23 @@ $routes->group('admin', ['filter' => 'admin'], static function ($routes)
     $routes->get('tipe-kamar/edit/(:num)', 'TipeKamarController::edit/$1');
     $routes->post('tipe-kamar/update/(:num)', 'TipeKamarController::update/$1');
     $routes->get('tipe-kamar/delete/(:num)', 'TipeKamarController::delete/$1');
+
+    $routes->get('kamar', 'KamarController::index');
+    $routes->get('kamar/create', 'KamarController::create');
+    $routes->post('kamar/store', 'KamarController::store');
+    $routes->get('kamar/edit/(:num)', 'KamarController::edit/$1');
+    $routes->post('kamar/update/(:num)', 'KamarController::update/$1');
+    $routes->get('kamar/delete/(:num)', 'KamarController::delete/$1');
+
+    $routes->get('penghuni', 'AdminPenghuniController::index');
+    $routes->get('penghuni/create', 'AdminPenghuniController::create');
+    $routes->post('penghuni/store', 'AdminPenghuniController::store');
+    $routes->get('penghuni/delete/(:num)', 'AdminPenghuniController::delete/$1');
+
+    $routes->get('tagihan', 'AdminTagihanController::index');
+    $routes->get('tagihan/create', 'AdminTagihanController::create');
+    $routes->post('tagihan/store', 'AdminTagihanController::store');
+    $routes->get('tagihan/lunasi/(:num)', 'AdminTagihanController::lunasi/$1');
 });
 
 $routes->group('penghuni', ['filter' => 'penghuni'], static function ($routes) 
