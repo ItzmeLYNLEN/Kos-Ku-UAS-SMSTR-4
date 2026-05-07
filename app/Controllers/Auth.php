@@ -11,18 +11,31 @@ class Auth extends BaseController
         return view('auth/login');
     }
 
-    public function process()
+   public function process()
     {
         $session = session();
         $model = new PenggunaModel();
         
-        $username = $this->request->getVar('username');
-        $password = $this->request->getVar('password');
+        // Tambahkan trim() untuk membersihkan spasi gaib di awal/akhir teks
+        $username = trim($this->request->getVar('username'));
+        $password = trim($this->request->getVar('password'));
         
         $data = $model->where('username', $username)->first();
         
         if ($data) {
             $pass = $data['password'];
+            
+            // === JURUS DEBUGGING (Buka komentar blok ini JIKA masih error) ===
+            /*
+            dd([
+                '1_password_diketik' => $password,
+                '2_hash_di_database' => $pass,
+                '3_panjang_hash_db'  => strlen($pass), // Wajib 60 karakter!
+                '4_hasil_cocok_kah'  => password_verify($password, $pass)
+            ]);
+            */
+            // =================================================================
+            
             $verify_pass = password_verify($password, $pass);
             
             if ($verify_pass) {

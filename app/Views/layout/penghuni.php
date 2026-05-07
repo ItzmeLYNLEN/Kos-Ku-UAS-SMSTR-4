@@ -24,6 +24,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="<?= base_url('penghuni/komplain') ?>">Komplain</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?= base_url('penghuni/pembayaran') ?>">Bayar Tagihan</a>
+                    </li>
                 </ul>
                 <div class="d-flex">
                     <span class="navbar-text me-3 text-white">
@@ -40,5 +43,8 @@
     </div>
 
     <script src="<?= base_url('js/bootstrap.bundle.min.js') ?>"></script>
+    <script src="<?= base_url('js/sweetalert2.all.min.js') ?>"></script>
+    
+    <?= $this->renderSection('scripts') ?>
 </body>
 </html>

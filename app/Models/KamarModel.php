@@ -20,4 +20,12 @@ class KamarModel extends Model
         }
         return $this->join('tb_tipe_kamar', 'tb_tipe_kamar.id_tipe = tb_kamar.id_tipe')->where('id_kamar', $id)->first();
     }
+
+    public function getKamarTersedia()
+    {
+        return $this->select('tb_kamar.*, tb_tipe_kamar.nama_tipe, tb_tipe_kamar.harga_dasar, tb_tipe_kamar.fasilitas')
+                    ->join('tb_tipe_kamar', 'tb_tipe_kamar.id_tipe = tb_kamar.id_tipe')
+                    ->where('status_kamar', 'Tersedia')
+                    ->findAll();
+    }
 }

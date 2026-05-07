@@ -55,4 +55,38 @@ class AdminTagihanController extends BaseController
         session()->setFlashdata('pesan', 'Tagihan berhasil ditandai sebagai Lunas.');
         return redirect()->to('/admin/tagihan');
     }
+
+    public function bulkGenerate()
+{
+    $profilModel = new \App\Models\ProfilPenghuniModel();
+    $penghuniAktif = $profilModel->select('tb_profil_penghuni.id_pengguna, tb_tipe_kamar.harga_dasar')
+                                 ->join('tb_kamar', 'tb_kamar.id_kamar = tb_profil_penghuni.id_kamar')
+                                 ->join('tb_tipe_kamar', 'tb_tipe_kamar.id_tipe = tb_kamar.id_tipe')
+                                 ->findAll();
+
+    $bulan = date('F'); // Contoh: May
+    $tahun = date('Y');
+
+    foreach ($penghuniAktif as $p) {
+        // Cek dulu apakah sudah ada tagihan untuk bulan ini agar tidak double
+        $exists = $this->tagihanModel->where([
+            'id_pengguna' => $p['id_pengguna'],
+            'bulan' => $bulan,
+            'tahun' => $tahun
+        ])->first();
+
+        if (!$exists) {
+            $this->tagihanModel->insert([
+                'id_pengguna'  => $p['id_pengguna'],
+                'bulan'        => $bulan,
+                'tahun'        => $tahun,
+                'nominal_asal' => $p['harga_dasar'],
+                'status_bayar' => 'Belum Bayar'
+            ]);
+        }
+    }
+
+    session()->setFlashdata('pesan', 'Tagihan bulan ini untuk semua penghuni berhasil dibuat otomatis!');
+    return redirect()->to('/admin/tagihan');
+}
 }

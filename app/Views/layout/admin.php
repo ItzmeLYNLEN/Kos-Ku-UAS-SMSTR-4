@@ -30,6 +30,15 @@
                     <li class="nav-item">
                         <a class="nav-link" href="<?= base_url('admin/tagihan') ?>">Tagihan Kos</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?= base_url('admin/komplain') ?>">Komplain Fasilitas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?= base_url('admin/pembayaran') ?>">Laporan Pembayaran</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?= base_url('admin/booking') ?>">Daftar Booking Masuk</a>
+                </li>
                 </ul>
                 <div class="d-flex">
                     <span class="navbar-text me-3 text-white">

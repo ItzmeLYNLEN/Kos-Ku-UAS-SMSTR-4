@@ -10,6 +10,6 @@ class PenggunaModel extends Model
     protected $primaryKey = 'id_pengguna';
     protected $allowedFields = ['username', 'password', 'role', 'is_first_login'];
     protected $useTimestamps = true;
-    protected $useSoftDeletes = true;
+    protected $useSoftDeletes = false;
     protected $deletedField  = 'deleted_at';
 }
