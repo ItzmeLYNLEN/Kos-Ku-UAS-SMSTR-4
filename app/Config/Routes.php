@@ -27,6 +27,9 @@ $routes->group('admin', ['filter' => 'admin'], static function ($routes)
     $routes->get('booking/delete/(:num)', 'AdminBookingController::delete/$1');
     $routes->get('booking/clear-cancelled', 'AdminBookingController::clearCancelled');
 
+    $routes->get('laporan', 'AdminLaporanController::index');
+    $routes->get('laporan/export', 'AdminLaporanController::exportExcel');
+
     $routes->get('dashboard', 'AdminController::index');
     $routes->get('tipe-kamar', 'TipeKamarController::index');
     $routes->get('tipe-kamar/create', 'TipeKamarController::create');
@@ -51,6 +54,7 @@ $routes->group('admin', ['filter' => 'admin'], static function ($routes)
     $routes->get('tagihan/create', 'AdminTagihanController::create');
     $routes->post('tagihan/store', 'AdminTagihanController::store');
     $routes->get('tagihan/lunasi/(:num)', 'AdminTagihanController::lunasi/$1');
+    $routes->post('tagihan/bulk-generate', 'AdminTagihanController::bulkGenerate');
 
     $routes->get('komplain', 'AdminKomplainController::index');
     $routes->post('komplain/update/(:num)', 'AdminKomplainController::updateStatus/$1');

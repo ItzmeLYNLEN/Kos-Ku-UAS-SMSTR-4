@@ -34,7 +34,7 @@
                         <a class="nav-link" href="<?= base_url('admin/komplain') ?>">Komplain Fasilitas</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?= base_url('admin/pembayaran') ?>">Laporan Pembayaran</a>
+                        <a class="nav-link" href="<?= base_url('admin/laporan') ?>">Laporan Pembayaran</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="<?= base_url('admin/booking') ?>">Daftar Booking Masuk</a>

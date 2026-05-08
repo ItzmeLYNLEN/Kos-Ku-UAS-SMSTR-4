@@ -74,39 +74,43 @@
         });
     <?php endif; ?>
 
-    $('.btn-hapus').on('click', function(e) {
-        let url = $(this).data('url');
-        Swal.fire({
-            title: 'Hapus data ini?',
-            text: "Data yang dihapus tidak bisa dikembalikan!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Ya, Hapus!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.location.href = url;
-            }
+    document.querySelectorAll('.btn-hapus').forEach(button => {
+        button.addEventListener('click', function() {
+            let url = this.getAttribute('data-url');
+            Swal.fire({
+                title: 'Hapus data ini?',
+                text: "Data yang dihapus tidak bisa dikembalikan!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = url;
+                }
+            });
         });
     });
 
-    $('.btn-bersihkan').on('click', function(e) {
-        let url = $(this).data('url');
-        Swal.fire({
-            title: 'Bersihkan Semua Sampah?',
-            text: "Semua data dengan status 'Dibatalkan' akan dihapus permanen.",
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Ya, Sapu Bersih!',
-            cancelButtonText: 'Jangan'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.location.href = url;
-            }
+    document.querySelectorAll('.btn-bersihkan').forEach(button => {
+        button.addEventListener('click', function() {
+            let url = this.getAttribute('data-url');
+            Swal.fire({
+                title: 'Bersihkan Semua Sampah?',
+                text: "Semua data dengan status 'Dibatalkan' akan dihapus permanen.",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, Sapu Bersih!',
+                cancelButtonText: 'Jangan'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = url;
+                }
+            });
         });
     });
 </script>

@@ -6,6 +6,7 @@ use App\Models\BookingModel;
 use App\Models\KamarModel;
 use App\Models\PenggunaModel;
 use App\Models\ProfilPenghuniModel;
+use App\Models\TagihanModel;
 
 class AdminBookingController extends BaseController
 {
@@ -74,6 +75,12 @@ class AdminBookingController extends BaseController
         $db->transStart();
 
         $booking = $this->bookingModel->find($id);
+        
+        $kamar = $this->kamarModel->select('tb_tipe_kamar.harga_dasar, tb_kamar.no_kamar')
+                                  ->join('tb_tipe_kamar', 'tb_tipe_kamar.id_tipe = tb_kamar.id_tipe')
+                                  ->where('id_kamar', $booking['id_kamar'])
+                                  ->first();
+
         $password_plain = 'kos' . rand(1000, 9999);
         
         $penggunaModel = new PenggunaModel();
@@ -95,8 +102,39 @@ class AdminBookingController extends BaseController
 
         $this->kamarModel->update($booking['id_kamar'], ['status_kamar' => 'Terisi']);
 
-        $dataKamar = $this->kamarModel->find($booking['id_kamar']);
-        $no_kamar_asli = $dataKamar['no_kamar'];
+        $tagihanModel = new TagihanModel();
+        $bulanIndo = [
+            'January' => 'Januari', 'February' => 'Februari', 'March' => 'Maret',
+            'April' => 'April', 'May' => 'Mei', 'June' => 'Juni',
+            'July' => 'Juli', 'August' => 'Agustus', 'September' => 'September',
+            'October' => 'Oktober', 'November' => 'November', 'December' => 'Desember'
+        ];
+        $bulan = $bulanIndo[date('F')];
+        $tahun = date('Y');
+
+        $tagihanModel->insert([
+            'id_pengguna'   => $id_pengguna,
+            'bulan'         => $bulan,
+            'tahun'         => $tahun,
+            'nominal_asal'  => $booking['nominal_dp'],
+            'nominal_denda' => 0,
+            'status_bayar'  => 'Lunas'
+        ]);
+
+        $sisa = $kamar['harga_dasar'] - $booking['nominal_dp'];
+        
+        if ($sisa > 0) {
+            $tagihanModel->insert([
+                'id_pengguna'   => $id_pengguna,
+                'bulan'         => $bulan,
+                'tahun'         => $tahun,
+                'nominal_asal'  => $sisa,
+                'nominal_denda' => 0,
+                'status_bayar'  => 'Belum Bayar'
+            ]);
+        }
+
+        $no_kamar_asli = $kamar['no_kamar'];
 
         $calonLain = $this->bookingModel->where('id_kamar', $booking['id_kamar'])
                                          ->where('id_booking !=', $id)
@@ -120,7 +158,8 @@ class AdminBookingController extends BaseController
                            ->set(['status_booking' => 'Dibatalkan (Penuh)'])
                            ->update();
 
-        $this->bookingModel->delete($id);
+        $this->bookingModel->where('id_booking', $id)->delete(null, true);
+        
         $db->transComplete();
 
         $emailSukses = \Config\Services::email();
@@ -129,7 +168,7 @@ class AdminBookingController extends BaseController
         $emailSukses->setMessage("Akun Anda aktif. Username: " . $booking['no_wa'] . " Password: " . $password_plain);
         $emailSukses->send();
 
-        session()->setFlashdata('pesan', 'Akun dibuat & email notifikasi (berhasil/gagal) telah terkirim.');
+        session()->setFlashdata('pesan', 'Akun berhasil dibuat dan data booking telah dihapus otomatis.');
         return redirect()->to('/admin/booking');
     }
 
@@ -142,7 +181,9 @@ class AdminBookingController extends BaseController
 
     public function clearCancelled()
     {
-        $this->bookingModel->where('status_booking', 'Dibatalkan (Penuh)')->delete();
+        $db = \Config\Database::connect();
+        $db->table('tb_booking')->like('status_booking', 'Dibatalkan')->delete();
+        
         session()->setFlashdata('pesan', 'Semua sampah data booking yang batal telah dibersihkan!');
         return redirect()->to('/admin/booking');
     }

@@ -57,36 +57,52 @@ class AdminTagihanController extends BaseController
     }
 
     public function bulkGenerate()
-{
-    $profilModel = new \App\Models\ProfilPenghuniModel();
-    $penghuniAktif = $profilModel->select('tb_profil_penghuni.id_pengguna, tb_tipe_kamar.harga_dasar')
-                                 ->join('tb_kamar', 'tb_kamar.id_kamar = tb_profil_penghuni.id_kamar')
-                                 ->join('tb_tipe_kamar', 'tb_tipe_kamar.id_tipe = tb_kamar.id_tipe')
-                                 ->findAll();
+    {
+        $profilModel = new \App\Models\ProfilPenghuniModel();
+        
+        $penghuniAktif = $profilModel->select('tb_profil_penghuni.id_pengguna, tb_tipe_kamar.harga_dasar')
+                                     ->join('tb_kamar', 'tb_kamar.id_kamar = tb_profil_penghuni.id_kamar')
+                                     ->join('tb_tipe_kamar', 'tb_tipe_kamar.id_tipe = tb_kamar.id_tipe')
+                                     ->findAll();
 
-    $bulan = date('F'); // Contoh: May
-    $tahun = date('Y');
+        $bulanIndo = [
+            'January' => 'Januari', 'February' => 'Februari', 'March' => 'Maret',
+            'April' => 'April', 'May' => 'Mei', 'June' => 'Juni',
+            'July' => 'Juli', 'August' => 'Agustus', 'September' => 'September',
+            'October' => 'Oktober', 'November' => 'November', 'December' => 'Desember'
+        ];
+        
+        $bulan = $bulanIndo[date('F')]; 
+        $tahun = date('Y');
+        $jumlahDibuat = 0;
 
-    foreach ($penghuniAktif as $p) {
-        // Cek dulu apakah sudah ada tagihan untuk bulan ini agar tidak double
-        $exists = $this->tagihanModel->where([
-            'id_pengguna' => $p['id_pengguna'],
-            'bulan' => $bulan,
-            'tahun' => $tahun
-        ])->first();
+        foreach ($penghuniAktif as $p) {
+            $exists = $this->tagihanModel->where([
+                'id_pengguna' => $p['id_pengguna'],
+                'bulan'       => $bulan,
+                'tahun'       => $tahun
+            ])->first();
 
-        if (!$exists) {
-            $this->tagihanModel->insert([
-                'id_pengguna'  => $p['id_pengguna'],
-                'bulan'        => $bulan,
-                'tahun'        => $tahun,
-                'nominal_asal' => $p['harga_dasar'],
-                'status_bayar' => 'Belum Bayar'
-            ]);
+            if (!$exists) {
+                $this->tagihanModel->insert([
+                    'id_pengguna'   => $p['id_pengguna'],
+                    'bulan'         => $bulan,
+                    'tahun'         => $tahun,
+                    'nominal_asal'  => $p['harga_dasar'],
+                    'nominal_denda' => 0,
+                    'status_bayar'  => 'Belum Bayar'
+                ]);
+                $jumlahDibuat++;
+            }
         }
+
+        if ($jumlahDibuat > 0) {
+            session()->setFlashdata('pesan', "$jumlahDibuat tagihan bulan $bulan $tahun berhasil dibuat otomatis!");
+        } else {
+            session()->setFlashdata('pesan_error', "Semua penghuni sudah punya tagihan untuk bulan $bulan $tahun.");
+        }
+
+        return redirect()->to('/admin/tagihan');
     }
 
-    session()->setFlashdata('pesan', 'Tagihan bulan ini untuk semua penghuni berhasil dibuat otomatis!');
-    return redirect()->to('/admin/tagihan');
-}
 }
