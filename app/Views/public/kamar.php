@@ -3,16 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beranda - Si-Kos</title>
+    <title>Semua Kamar - Si-Kos</title>
     <link href="<?= base_url('css/bootstrap.min.css') ?>" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; }
-        .hero { background: linear-gradient(135deg, #0d6efd 0%, #0dcaf0 100%); color: white; padding: 100px 0; }
         .card-kamar { transition: transform 0.2s; border: none; border-radius: 15px; display: flex; flex-direction: column; height: 100%; }
         .card-kamar:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .icon-box { width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 24px; margin: 0 auto 15px; }
         .badge-vip { background-color: #ffc107; color: #000; }
         .badge-std { background-color: #0d6efd; color: #fff; }
         .carousel-item img { object-fit: cover; height: 300px; border-radius: 10px; }
@@ -22,61 +20,14 @@
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top shadow-sm">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="<?= base_url('/') ?>">Si-Kos</a>
-            <div class="ms-auto">
-                <a href="<?= base_url('login') ?>" class="btn btn-light btn-sm fw-bold text-primary px-4 rounded-pill">Login Penghuni</a>
-            </div>
+            <a class="navbar-brand fw-bold" href="<?= base_url('/') ?>"><i class="bi bi-arrow-left"></i> Kembali ke Beranda</a>
         </div>
     </nav>
 
-    <div class="hero text-center mb-5">
-        <div class="container">
-            <h1 class="fw-bold display-5 mb-3">Temukan Kamar Kos Nyamanmu</h1>
-            <p class="lead mb-0 opacity-75">Lokasi strategis, fasilitas lengkap, dan pembayaran super mudah.</p>
-        </div>
-    </div>
-
-    <div class="container mb-5">
-        <div class="row g-4">
-            <div class="col-md-6">
-                <div class="card border-0 shadow-sm h-100 p-4">
-                    <h5 class="fw-bold mb-4"><i class="bi bi-info-circle text-primary"></i> Cara Booking</h5>
-                    <div class="d-flex mb-3">
-                        <div class="me-3 fw-bold text-primary">1.</div>
-                        <div>Pilih kamar yang tersedia dan klik tombol <strong>"Booking"</strong>.</div>
-                    </div>
-                    <div class="d-flex mb-3">
-                        <div class="me-3 fw-bold text-primary">2.</div>
-                        <div>Isi formulir dengan nama, WhatsApp, dan email yang aktif.</div>
-                    </div>
-                    <div class="d-flex mb-3">
-                        <div class="me-3 fw-bold text-primary">3.</div>
-                        <div>Tunggu persetujuan Admin via Email, lalu lakukan pembayaran DP 50%.</div>
-                    </div>
-                    <div class="d-flex">
-                        <div class="me-3 fw-bold text-primary">4.</div>
-                        <div>Akun login akan dikirim, dan Anda resmi menjadi penghuni!</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card border-0 shadow-sm h-100 p-4">
-                    <h5 class="fw-bold mb-4"><i class="bi bi-exclamation-triangle text-danger"></i> Peraturan Kos</h5>
-                    <ul class="text-muted">
-                        <li class="mb-2">Dilarang membawa hewan peliharaan.</li>
-                        <li class="mb-2">Dilarang membawa tamu menginap tanpa izin pengurus kos.</li>
-                        <li class="mb-2">Jam malam berlaku hingga pukul 23:00 WIB.</li>
-                        <li class="mb-2">Wajib menjaga kebersihan fasilitas bersama (dapur & area parkir).</li>
-                        <li>Pembayaran bulanan paling lambat tanggal 5 setiap bulannya.</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="container py-4 mb-5">
-        <div class="d-flex justify-content-between align-items-end mb-4">
-            <h4 class="fw-bold m-0">Beberapa Kamar Tersedia</h4>
+    <div class="container py-5">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Katalog Kamar Kos</h2>
+            <p class="text-muted">Pilih kamar yang paling sesuai dengan kebutuhan Anda.</p>
         </div>
         
         <div class="row g-4">
@@ -88,31 +39,34 @@
                 <?php foreach($kamar_tersedia as $k): 
                     $isVip = (stripos($k['nama_tipe'], 'vip') !== false);
                 ?>
-                <div class="col-md-3 col-sm-6 d-flex align-items-stretch">
+                <div class="col-md-4 col-sm-6 mb-4 d-flex align-items-stretch">
                     <div class="card card-kamar w-100 shadow-sm <?= $isVip ? 'border border-warning' : '' ?>">
-                        <div class="bg-light text-center py-4 rounded-top border-bottom position-relative">
-                            <?php if($isVip): ?>
-                                <span class="position-absolute top-0 start-50 translate-middle badge rounded-pill bg-warning text-dark shadow-sm px-3 py-2" style="margin-top: 10px;">
-                                    <i class="bi bi-star-fill"></i> Kamar VIP
+                        <div class="bg-light text-center py-5 rounded-top border-bottom position-relative">
+                             <?php if($isVip): ?>
+                                <span class="position-absolute top-0 start-50 translate-middle badge rounded-pill bg-warning text-dark shadow-sm px-4 py-2" style="margin-top: 15px; font-size: 0.9rem;">
+                                    <i class="bi bi-star-fill"></i> Kamar Eksklusif VIP
                                 </span>
                             <?php endif; ?>
                             <h1 class="text-muted opacity-25 m-0 mt-3"><i class="bi bi-door-closed"></i> <?= $k['no_kamar'] ?></h1>
                         </div>
                         <div class="card-body d-flex flex-column">
                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="badge <?= $isVip ? 'badge-vip' : 'badge-std' ?> px-2 py-1"><?= $k['nama_tipe'] ?></span>
+                                <span class="badge <?= $isVip ? 'badge-vip' : 'badge-std' ?> px-3 py-2 rounded-pill"><?= $k['nama_tipe'] ?></span>
                             </div>
-                            <h5 class="fw-bold text-success mb-2">Rp <?= number_format($k['harga_dasar'], 0, ',', '.') ?><span class="fs-6 text-muted fw-normal">/bln</span></h5>
-                            <p class="card-text text-muted small flex-grow-1">
-                                <?= mb_strimwidth(nl2br($k['fasilitas']), 0, 40, '...') ?>
+                            <h5 class="fw-bold text-success mb-3">Rp <?= number_format($k['harga_dasar'], 0, ',', '.') ?><span class="fs-6 text-muted fw-normal">/bln</span></h5>
+                            
+                            <h5 class="card-title fw-bold">Kamar No. <?= $k['no_kamar'] ?></h5>
+                            <p class="card-text text-muted small mb-4">
+                                <strong>Fasilitas Singkat:</strong><br>
+                                <?= mb_strimwidth(nl2br($k['fasilitas']), 0, 50, '...') ?>
                             </p>
                             
                             <div class="mt-auto">
-                                <button type="button" class="btn btn-outline-secondary w-100 fw-bold mb-2 btn-sm" data-bs-toggle="modal" data-bs-target="#detailModal<?= $k['id_kamar'] ?>">
-                                    <i class="bi bi-images"></i> Detail
+                                <button type="button" class="btn btn-outline-secondary w-100 fw-bold mb-2" data-bs-toggle="modal" data-bs-target="#detailModal<?= $k['id_kamar'] ?>">
+                                    <i class="bi bi-images"></i> Detail Kamar
                                 </button>
-                                <button type="button" class="btn <?= $isVip ? 'btn-warning text-dark' : 'btn-outline-primary' ?> w-100 fw-bold btn-sm" data-bs-toggle="modal" data-bs-target="#bookingModal<?= $k['id_kamar'] ?>">
-                                    Booking Kamar
+                                <button type="button" class="btn <?= $isVip ? 'btn-warning text-dark' : 'btn-outline-primary' ?> w-100 fw-bold" data-bs-toggle="modal" data-bs-target="#bookingModal<?= $k['id_kamar'] ?>">
+                                    Booking Kamar Ini
                                 </button>
                             </div>
                         </div>
@@ -129,7 +83,7 @@
                             <div class="modal-body p-4">
                                 <div class="row">
                                     <div class="col-md-7 mb-4 mb-md-0">
-                                        <div id="carouselHome<?= $k['id_kamar'] ?>" class="carousel slide" data-bs-ride="carousel">
+                                        <div id="carouselKamar<?= $k['id_kamar'] ?>" class="carousel slide" data-bs-ride="carousel">
                                             <div class="carousel-inner rounded shadow-sm">
                                                 <div class="carousel-item active">
                                                     <img src="<?= !empty($k['foto_1']) ? base_url('uploads/kamar/'.$k['foto_1']) : 'https://via.placeholder.com/600x400?text=Foto+Kamar+1' ?>" class="d-block w-100" alt="Foto 1">
@@ -141,22 +95,26 @@
                                                     <img src="<?= !empty($k['foto_3']) ? base_url('uploads/kamar/'.$k['foto_3']) : 'https://via.placeholder.com/600x400?text=Foto+Kamar+3' ?>" class="d-block w-100" alt="Foto 3">
                                                 </div>
                                             </div>
-                                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselHome<?= $k['id_kamar'] ?>" data-bs-slide="prev">
+                                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselKamar<?= $k['id_kamar'] ?>" data-bs-slide="prev">
                                                 <span class="carousel-control-prev-icon bg-dark rounded-circle p-2" aria-hidden="true"></span>
+                                                <span class="visually-hidden">Previous</span>
                                             </button>
-                                            <button class="carousel-control-next" type="button" data-bs-target="#carouselHome<?= $k['id_kamar'] ?>" data-bs-slide="next">
+                                            <button class="carousel-control-next" type="button" data-bs-target="#carouselKamar<?= $k['id_kamar'] ?>" data-bs-slide="next">
                                                 <span class="carousel-control-next-icon bg-dark rounded-circle p-2" aria-hidden="true"></span>
+                                                <span class="visually-hidden">Next</span>
                                             </button>
                                         </div>
                                     </div>
                                     
                                     <div class="col-md-5">
                                         <h5 class="fw-bold text-success mb-3">Rp <?= number_format($k['harga_dasar'], 0, ',', '.') ?> <small class="text-muted fs-6">/ bulan</small></h5>
+                                        
                                         <h6 class="fw-bold"><i class="bi bi-info-square text-primary"></i> Deskripsi</h6>
                                         <p class="text-muted small mb-4">
-                                            <?= !empty($k['deskripsi']) ? nl2br($k['deskripsi']) : 'Kamar kos nyaman dan bersih. Cocok untuk Anda.' ?>
+                                            <?= !empty($k['deskripsi']) ? nl2br($k['deskripsi']) : 'Kamar kos nyaman dan bersih dengan sirkulasi udara yang baik. Cocok untuk Anda yang membutuhkan ketenangan setelah beraktivitas seharian.' ?>
                                         </p>
-                                        <h6 class="fw-bold"><i class="bi bi-ui-checks-grid text-primary"></i> Fasilitas</h6>
+
+                                        <h6 class="fw-bold"><i class="bi bi-ui-checks-grid text-primary"></i> Fasilitas Tersedia</h6>
                                         <ul class="text-muted small ps-3">
                                             <?php 
                                             $fasilitas_list = explode(',', $k['fasilitas']);
@@ -193,7 +151,7 @@
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Nama Lengkap</label>
-                                        <input type="text" class="form-control" name="nama_calon" required placeholder="Sesuai KTP">
+                                        <input type="text" class="form-control" name="nama_calon" required placeholder="Masukkan nama sesuai KTP">
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Nomor WhatsApp</label>
@@ -202,7 +160,7 @@
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Alamat Email</label>
                                         <input type="email" class="form-control" name="email" required placeholder="email@contoh.com">
-                                        <div class="form-text text-danger">Pastikan email aktif untuk akun login.</div>
+                                        <div class="form-text text-danger">Pastikan email aktif untuk menerima detail akun login.</div>
                                     </div>
                                 </div>
                                 <div class="modal-footer bg-light border-0">
@@ -215,27 +173,6 @@
                 </div>
                 <?php endforeach; ?>
             <?php endif; ?>
-        </div>
-
-        <?php if(!empty($kamar_tersedia)): ?>
-        <div class="text-center mt-5">
-            <a href="<?= base_url('kamar') ?>" class="btn btn-primary fw-bold px-5 py-2 rounded-pill shadow-sm">
-                Lihat Semua Kamar <i class="bi bi-arrow-right"></i>
-            </a>
-        </div>
-        <?php endif; ?>
-    </div>
-
-    <div class="bg-dark text-white py-5 mt-5">
-        <div class="container text-center">
-            <h5 class="fw-bold mb-3">Butuh Bantuan? Hubungi Kami</h5>
-            <p class="text-white-50 mb-4">Jika Anda memiliki pertanyaan, silakan hubungi kontak di bawah ini.</p>
-            <a href="mailto:admin@sikos.com" class="btn btn-outline-light rounded-pill px-4 me-2">
-                <i class="bi bi-envelope"></i> Email Kami
-            </a>
-            <a href="https://wa.me/6281234567890" target="_blank" class="btn btn-success rounded-pill px-4">
-                <i class="bi bi-whatsapp"></i> Chat WhatsApp
-            </a>
         </div>
     </div>
 

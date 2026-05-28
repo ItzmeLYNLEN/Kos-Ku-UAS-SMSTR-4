@@ -10,10 +10,21 @@ class Home extends BaseController
     public function index()
     {
         $kamarModel = new KamarModel();
+        $semuaKamar = $kamarModel->getKamarTersedia();
+        
+        $data = [
+            'kamar_tersedia' => array_slice($semuaKamar, 0, 4)
+        ];
+        return view('public/index', $data);
+    }
+
+    public function daftarKamar()
+    {
+        $kamarModel = new KamarModel();
         $data = [
             'kamar_tersedia' => $kamarModel->getKamarTersedia()
         ];
-        return view('public/index', $data);
+        return view('public/kamar', $data);
     }
 
     public function submitBooking()
@@ -26,7 +37,7 @@ class Home extends BaseController
         $cekKamar = $kamarModel->find($id_kamar);
         if ($cekKamar['status_kamar'] != 'Tersedia') {
             session()->setFlashdata('pesan_error', 'Maaf, kamar ini baru saja dibooking orang lain.');
-            return redirect()->to('/');
+            return redirect()->back();
         }
 
         $bookingModel->insert([
@@ -38,7 +49,7 @@ class Home extends BaseController
         ]);
 
         session()->setFlashdata('pesan_sukses', 'Booking berhasil diajukan! Admin kami akan segera menghubungi Anda melalui WhatsApp atau Email.');
-        return redirect()->to('/');
+        return redirect()->back();
     }
 
     public function track($id_booking)

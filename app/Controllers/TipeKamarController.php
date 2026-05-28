@@ -26,41 +26,60 @@ class TipeKamarController extends BaseController
         return view('admin/tipe_kamar/create');
     }
 
-    public function store()
+public function store()
     {
-        $this->tipeKamarModel->save([
+        $data = [
             'nama_tipe'   => $this->request->getVar('nama_tipe'),
             'harga_dasar' => $this->request->getVar('harga_dasar'),
             'fasilitas'   => $this->request->getVar('fasilitas'),
-        ]);
-        session()->setFlashdata('pesan', 'Data tipe kamar berhasil ditambahkan.');
-        return redirect()->to('/admin/tipe-kamar');
-    }
-
-    public function edit($id)
-    {
-        $data = [
-            'tipe' => $this->tipeKamarModel->find($id)
+            'deskripsi'   => $this->request->getVar('deskripsi')
         ];
-        return view('admin/tipe_kamar/edit', $data);
+
+        for ($i = 1; $i <= 3; $i++) {
+            $fileFoto = $this->request->getFile('foto_' . $i);
+            if ($fileFoto && $fileFoto->isValid() && !$fileFoto->hasMoved()) {
+                $namaFoto = $fileFoto->getRandomName();
+                // Paksa pindah ke public/uploads/kamar
+                $fileFoto->move(ROOTPATH . 'public/uploads/kamar', $namaFoto);
+                $data['foto_' . $i] = $namaFoto;
+            }
+        }
+
+        $this->tipeKamarModel->save($data);
+        session()->setFlashdata('pesan', 'Data tipe kamar beserta foto berhasil ditambahkan.');
+        return redirect()->to('/admin/tipe-kamar');
     }
 
     public function update($id)
     {
-        $this->tipeKamarModel->save([
+        $tipeLama = $this->tipeKamarModel->find($id);
+
+        $data = [
             'id_tipe'     => $id,
             'nama_tipe'   => $this->request->getVar('nama_tipe'),
             'harga_dasar' => $this->request->getVar('harga_dasar'),
             'fasilitas'   => $this->request->getVar('fasilitas'),
-        ]);
-        session()->setFlashdata('pesan', 'Data tipe kamar berhasil diubah.');
-        return redirect()->to('/admin/tipe-kamar');
-    }
+            'deskripsi'   => $this->request->getVar('deskripsi')
+        ];
 
-    public function delete($id)
-    {
-        $this->tipeKamarModel->delete($id);
-        session()->setFlashdata('pesan', 'Data tipe kamar berhasil dihapus.');
+        for ($i = 1; $i <= 3; $i++) {
+            $fileFoto = $this->request->getFile('foto_' . $i);
+            
+            if ($fileFoto && $fileFoto->isValid() && !$fileFoto->hasMoved()) {
+                $namaFoto = $fileFoto->getRandomName();
+                // Paksa pindah ke public/uploads/kamar
+                $fileFoto->move(ROOTPATH . 'public/uploads/kamar', $namaFoto);
+                $data['foto_' . $i] = $namaFoto;
+                
+                // Hapus foto lama jika ada
+                if (!empty($tipeLama['foto_' . $i]) && file_exists(ROOTPATH . 'public/uploads/kamar/' . $tipeLama['foto_' . $i])) {
+                    unlink(ROOTPATH . 'public/uploads/kamar/' . $tipeLama['foto_' . $i]);
+                }
+            }
+        }
+
+        $this->tipeKamarModel->save($data);
+        session()->setFlashdata('pesan', 'Data tipe kamar berhasil diubah.');
         return redirect()->to('/admin/tipe-kamar');
     }
 }

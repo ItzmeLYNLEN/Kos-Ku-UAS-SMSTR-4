@@ -11,6 +11,7 @@ $routes->get('login', 'Auth::index');
 $routes->post('login/process', 'Auth::process');
 $routes->get('logout', 'Auth::logout');
 $routes->post('/ganti-password/process', 'Auth::processGantiPassword', ['filter' => 'penghuni']);
+$routes->get('/kamar', 'Home::daftarKamar');
 
 
 $routes->post('/booking/submit', 'Home::submitBooking');

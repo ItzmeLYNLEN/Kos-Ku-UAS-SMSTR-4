@@ -8,7 +8,9 @@ class TipeKamarModel extends Model
 {
     protected $table = 'tb_tipe_kamar';
     protected $primaryKey = 'id_tipe';
-    protected $allowedFields = ['nama_tipe', 'harga_dasar', 'fasilitas'];
+    
+    protected $allowedFields = ['nama_tipe', 'harga_dasar', 'fasilitas', 'deskripsi', 'foto_1', 'foto_2', 'foto_3'];
+    
     protected $useTimestamps = true;
     protected $useSoftDeletes = true;
     protected $deletedField  = 'deleted_at';
