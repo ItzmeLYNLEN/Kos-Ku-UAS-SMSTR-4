@@ -78,3 +78,5 @@ $routes->group('penghuni', ['filter' => 'penghuni'], static function ($routes)
 });
 
 $routes->get('/ganti-password', 'Auth::gantiPassword', ['filter' => 'penghuni']);
+$routes->get('/onboarding', 'Auth::onboarding', ['filter' => 'penghuni']);
+$routes->post('/onboarding/submit', 'Auth::onboardingSubmit', ['filter' => 'penghuni']);

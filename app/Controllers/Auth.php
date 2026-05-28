@@ -16,7 +16,6 @@ class Auth extends BaseController
         $session = session();
         $model = new PenggunaModel();
         
-        // Tambahkan trim() untuk membersihkan spasi gaib di awal/akhir teks
         $username = trim($this->request->getVar('username'));
         $password = trim($this->request->getVar('password'));
         
@@ -96,6 +95,56 @@ class Auth extends BaseController
         
         $session->set('is_first_login', 0);
         
+        return redirect()->to('/penghuni/dashboard');
+    }
+
+    public function onboarding()
+    {
+        if (session()->get('role') != 'Penghuni') return redirect()->to('/login');
+
+        $profilModel = new \App\Models\ProfilPenghuniModel();
+        $profil = $profilModel->where('id_pengguna', session()->get('id_pengguna'))->first();
+        if (!empty($profil['foto_ktp'])) {
+            return redirect()->to('/penghuni/dashboard');
+        }
+
+        return view('auth/onboarding');
+    }
+
+    public function onboardingSubmit()
+    {
+        $rules = [
+            'password_baru'       => 'required|min_length[6]',
+            'konfirmasi_password' => 'required|matches[password_baru]',
+            'kontak_darurat'      => 'required|numeric',
+            'foto_ktp'            => 'uploaded[foto_ktp]|max_size[foto_ktp,2048]|is_image[foto_ktp]|ext_in[foto_ktp,png,jpg,jpeg]'
+        ];
+
+        if (!$this->validate($rules)) {
+            session()->setFlashdata('pesan_error', 'Gagal! Pastikan form diisi dengan benar dan KTP berupa gambar maksimal 2MB.');
+            return redirect()->back()->withInput();
+        }
+
+        $id_pengguna = session()->get('id_pengguna');
+        
+        $penggunaModel = new \App\Models\PenggunaModel();
+        $penggunaModel->update($id_pengguna, [
+            'password' => password_hash($this->request->getVar('password_baru'), PASSWORD_BCRYPT)
+        ]);
+
+        $fileKtp = $this->request->getFile('foto_ktp');
+        $namaKtp = $fileKtp->getRandomName();
+        $fileKtp->move('uploads/ktp', $namaKtp);
+
+        $profilModel = new \App\Models\ProfilPenghuniModel();
+        $profil = $profilModel->where('id_pengguna', $id_pengguna)->first();
+        
+        $profilModel->update($profil['id_profil_penghuni'], [
+            'kontak_darurat' => $this->request->getVar('kontak_darurat'),
+            'foto_ktp'       => $namaKtp
+        ]);
+
+        session()->setFlashdata('pesan', 'Profil berhasil dilengkapi! Selamat Datang di Si-Kos.');
         return redirect()->to('/penghuni/dashboard');
     }
 }

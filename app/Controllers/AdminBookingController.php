@@ -22,9 +22,10 @@ class AdminBookingController extends BaseController
     public function index()
     {
         $data = [
-            'booking' => $this->bookingModel->select('tb_booking.*, tb_kamar.no_kamar, tb_tipe_kamar.harga_dasar')
+            'booking' => $this->bookingModel->select('tb_booking.*, tb_kamar.no_kamar, tb_tipe_kamar.harga_dasar, tb_booking.created_at AS tanggal_booking')
                                             ->join('tb_kamar', 'tb_kamar.id_kamar = tb_booking.id_kamar')
                                             ->join('tb_tipe_kamar', 'tb_tipe_kamar.id_tipe = tb_kamar.id_tipe')
+                                            ->where('tb_booking.status_booking !=', 'Selesai')
                                             ->orderBy('tb_booking.created_at', 'DESC')
                                             ->findAll()
         ];
