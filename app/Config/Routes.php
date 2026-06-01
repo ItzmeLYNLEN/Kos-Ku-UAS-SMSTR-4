@@ -61,6 +61,14 @@ $routes->group('admin', ['filter' => 'admin'], static function ($routes)
     $routes->post('komplain/update/(:num)', 'AdminKomplainController::updateStatus/$1');
 
     $routes->get('pembayaran', 'AdminPembayaranController::index');
+
+    $routes->get('profil', 'AdminProfilController::index');
+    $routes->post('profil/update', 'AdminProfilController::update');
+
+    $routes->get('kelola-admin', 'AdminProfilController::listAdmin');
+    $routes->get('kelola-admin/create', 'AdminProfilController::create');
+    $routes->post('kelola-admin/store', 'AdminProfilController::store');
+    $routes->get('kelola-admin/delete/(:num)', 'AdminProfilController::delete/$1');
 });
 
 $routes->group('penghuni', ['filter' => 'penghuni'], static function ($routes) 
@@ -76,6 +84,9 @@ $routes->group('penghuni', ['filter' => 'penghuni'], static function ($routes)
     $routes->post('pembayaran/checkout', 'PenghuniPembayaranController::checkout');
     $routes->get('pembayaran/invoice/(:segment)', 'PenghuniPembayaranController::invoice/$1');
     $routes->get('pembayaran/simulate/(:segment)', 'PenghuniPembayaranController::simulatePay/$1');
+
+    $routes->get('profil', 'PenghuniProfilController::index');
+    $routes->post('profil/update', 'PenghuniProfilController::update');
 });
 
 $routes->get('/ganti-password', 'Auth::gantiPassword', ['filter' => 'penghuni']);

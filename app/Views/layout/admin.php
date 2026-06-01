@@ -86,6 +86,9 @@
                 <a href="<?= base_url('admin/tagihan') ?>" class="<?= strpos(uri_string(), 'admin/tagihan') !== false ? 'active' : '' ?>"><i class="bi bi-receipt me-2"></i> Tagihan Kos</a>
                 <a href="<?= base_url('admin/laporan') ?>" class="<?= strpos(uri_string(), 'admin/laporan') !== false ? 'active' : '' ?>"><i class="bi bi-bar-chart-line me-2"></i> Laporan Pembayaran</a>
                 <a href="<?= base_url('admin/komplain') ?>" class="<?= strpos(uri_string(), 'admin/komplain') !== false ? 'active' : '' ?>"><i class="bi bi-chat-square-text me-2"></i> Komplain Fasilitas</a>
+                <div class="px-4 mt-4 mb-2 text-uppercase text-muted small fw-bold">Pengaturan</div>
+                <a href="<?= base_url('admin/kelola-admin') ?>" class="<?= strpos(uri_string(), 'admin/kelola-admin') !== false ? 'active' : '' ?>"><i class="bi bi-person-gear me-2"></i> Kelola Admin</a>
+                <a href="<?= base_url('admin/profil') ?>" class="<?= strpos(uri_string(), 'admin/profil') !== false ? 'active' : '' ?>"><i class="bi bi-person-circle me-2"></i> Profil Saya</a>
             </div>
         </div>
 

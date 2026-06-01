@@ -6,66 +6,31 @@
     <title><?= $this->renderSection('title') ?? 'Panel Penghuni - Si-Kos' ?></title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
     <link href="<?= base_url('css/bootstrap.min.css') ?>" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
     
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f4f6f9;
-            overflow-x: hidden;
-        }
-        
+        body { font-family: 'Inter', sans-serif; background-color: #f4f6f9; overflow-x: hidden; }
         .sidebar-menu a { color: #adb5bd; text-decoration: none; padding: 12px 20px; display: block; border-left: 4px solid transparent; transition: 0.3s; }
         .sidebar-menu a:hover, .sidebar-menu a.active { color: #fff; background: #0d6efd; border-left-color: #fff; }
         .top-navbar { background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
 
-        #sidebar {
-            width: 260px;
-            transition: margin 0.3s ease-in-out;
-            z-index: 1040;
-        }
+        #sidebar { width: 260px; transition: margin 0.3s ease-in-out; z-index: 1040; }
         
-        #sidebar-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.5);
-            z-index: 1030;
-            backdrop-filter: blur(2px);
-        }
+        #sidebar-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1030; backdrop-filter: blur(2px); }
 
         @media (max-width: 991.98px) {
-            #sidebar {
-                position: fixed;
-                height: 100vh;
-                margin-left: -260px;
-            }
-            #sidebar.show {
-                margin-left: 0; /* Munculkan */
-            }
-            #sidebar-overlay.show {
-                display: block; 
-            }
+            #sidebar { position: fixed; height: 100vh; margin-left: -260px; }
+            #sidebar.show { margin-left: 0; }
+            #sidebar-overlay.show { display: block; }
         }
 
-        /* --- FIX DATATABLES PADDING DI CARD P-0 --- */
-        .dataTables_wrapper > .row:first-child {
-            padding: 15px 24px 5px 24px;
-            margin: 0;
-        }
-        .dataTables_wrapper > .row:last-child {
-            padding: 5px 24px 15px 24px;
-            margin: 0;
-        }
-        .dataTables_wrapper .table {
-            margin-bottom: 0 !important;
-            border-top: 1px solid #dee2e6;
-            border-bottom: 1px solid #dee2e6;
-        }
+        .dataTables_wrapper > .row:first-child { padding: 15px 24px 5px 24px; margin: 0; }
+        .dataTables_wrapper > .row:last-child { padding: 5px 24px 15px 24px; margin: 0; }
+        .dataTables_wrapper .table { margin-bottom: 0 !important; border-top: 1px solid #dee2e6; border-bottom: 1px solid #dee2e6; }
+        
+        .hover-primary:hover { color: #0d6efd !important; }
     </style>
 </head>
 <body>
@@ -74,7 +39,6 @@
 
     <div class="d-flex flex-nowrap" style="min-height: 100vh;">
         
-        <!-- SIDEBAR KIRI -->
         <div id="sidebar" class="bg-dark text-white d-flex flex-column flex-shrink-0 shadow-lg">
             <div class="p-4 border-bottom border-secondary d-flex justify-content-between align-items-center">
                 <h5 class="fw-bold m-0"><i class="bi bi-house-door text-primary"></i> Penghuni</h5>
@@ -89,20 +53,24 @@
                 <a href="<?= base_url('penghuni/tagihan') ?>" class="<?= strpos(uri_string(), 'penghuni/tagihan') !== false ? 'active' : '' ?>"><i class="bi bi-receipt me-2"></i> Tagihan Saya</a>
                 <a href="<?= base_url('penghuni/pembayaran') ?>" class="<?= strpos(uri_string(), 'penghuni/pembayaran') !== false ? 'active' : '' ?>"><i class="bi bi-wallet2 me-2"></i> Bayar Tagihan</a>
                 <a href="<?= base_url('penghuni/komplain') ?>" class="<?= strpos(uri_string(), 'penghuni/komplain') !== false ? 'active' : '' ?>"><i class="bi bi-chat-square-text me-2"></i> Komplain Fasilitas</a>
+                
+                <div class="px-4 mt-4 mb-2 text-uppercase text-muted small fw-bold">Pengaturan</div>
+                <a href="<?= base_url('penghuni/profil') ?>" class="<?= strpos(uri_string(), 'penghuni/profil') !== false ? 'active' : '' ?>"><i class="bi bi-person-circle me-2"></i> Profil Saya</a>
             </div>
         </div>
 
         <div class="flex-grow-1 d-flex flex-column" style="min-width: 0; overflow-x: hidden;">
             
             <nav class="navbar navbar-expand-lg top-navbar px-3 py-3 border-bottom d-flex align-items-center">
-
                 <button class="btn btn-light border d-lg-none me-3" id="btn-toggle-sidebar">
                     <i class="bi bi-list fs-5"></i>
                 </button>
 
                 <div class="ms-auto d-flex align-items-center">
-                    <img src="https://ui-avatars.com/api/?name=<?= session()->get('username') ?>&background=0d6efd&color=fff&bold=true" class="rounded-circle me-2 shadow-sm" width="35" height="35">
-                    <span class="fw-bold text-dark me-3 d-none d-sm-inline"><?= session()->get('username') ?></span>
+                    <a href="<?= base_url('penghuni/profil') ?>" class="d-flex align-items-center text-decoration-none me-3" title="Lihat Profil">
+                        <img src="https://ui-avatars.com/api/?name=<?= session()->get('username') ?>&background=0d6efd&color=fff&bold=true" class="rounded-circle me-2 shadow-sm" width="35" height="35">
+                        <span class="fw-bold text-dark d-none d-sm-inline hover-primary transition"><?= session()->get('username') ?></span>
+                    </a>
                     <a href="<?= base_url('logout') ?>" class="btn btn-danger btn-sm fw-bold rounded-pill px-3"><i class="bi bi-box-arrow-right"></i> <span class="d-none d-sm-inline">Logout</span></a>
                 </div>
             </nav>
