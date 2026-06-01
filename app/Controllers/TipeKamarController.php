@@ -26,7 +26,7 @@ class TipeKamarController extends BaseController
         return view('admin/tipe_kamar/create');
     }
 
-public function store()
+    public function store()
     {
         $data = [
             'nama_tipe'   => $this->request->getVar('nama_tipe'),
@@ -39,7 +39,6 @@ public function store()
             $fileFoto = $this->request->getFile('foto_' . $i);
             if ($fileFoto && $fileFoto->isValid() && !$fileFoto->hasMoved()) {
                 $namaFoto = $fileFoto->getRandomName();
-                // Paksa pindah ke public/uploads/kamar
                 $fileFoto->move(ROOTPATH . 'public/uploads/kamar', $namaFoto);
                 $data['foto_' . $i] = $namaFoto;
             }
@@ -48,6 +47,15 @@ public function store()
         $this->tipeKamarModel->save($data);
         session()->setFlashdata('pesan', 'Data tipe kamar beserta foto berhasil ditambahkan.');
         return redirect()->to('/admin/tipe-kamar');
+    }
+
+    public function edit($id)
+    {
+        $data = [
+            'tipe' => $this->tipeKamarModel->find($id)
+        ];
+        
+        return view('admin/tipe_kamar/edit', $data);
     }
 
     public function update($id)
@@ -67,11 +75,9 @@ public function store()
             
             if ($fileFoto && $fileFoto->isValid() && !$fileFoto->hasMoved()) {
                 $namaFoto = $fileFoto->getRandomName();
-                // Paksa pindah ke public/uploads/kamar
                 $fileFoto->move(ROOTPATH . 'public/uploads/kamar', $namaFoto);
                 $data['foto_' . $i] = $namaFoto;
                 
-                // Hapus foto lama jika ada
                 if (!empty($tipeLama['foto_' . $i]) && file_exists(ROOTPATH . 'public/uploads/kamar/' . $tipeLama['foto_' . $i])) {
                     unlink(ROOTPATH . 'public/uploads/kamar/' . $tipeLama['foto_' . $i]);
                 }
@@ -80,6 +86,23 @@ public function store()
 
         $this->tipeKamarModel->save($data);
         session()->setFlashdata('pesan', 'Data tipe kamar berhasil diubah.');
+        return redirect()->to('/admin/tipe-kamar');
+    }
+
+    public function delete($id)
+    {
+        $tipe = $this->tipeKamarModel->find($id);
+
+        if ($tipe) {
+            for ($i = 1; $i <= 3; $i++) {
+                if (!empty($tipe['foto_' . $i]) && file_exists(ROOTPATH . 'public/uploads/kamar/' . $tipe['foto_' . $i])) {
+                    unlink(ROOTPATH . 'public/uploads/kamar/' . $tipe['foto_' . $i]);
+                }
+            }
+            $this->tipeKamarModel->delete($id);
+            session()->setFlashdata('pesan', 'Data tipe kamar berhasil dihapus.');
+        }
+
         return redirect()->to('/admin/tipe-kamar');
     }
 }

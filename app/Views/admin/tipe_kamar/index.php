@@ -16,7 +16,7 @@ Kelola Tipe Kamar - Si-Kos
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover table-borderless table-striped m-0">
+                    <table class="table table-hover table-striped m-0 w-100">
                         <thead class="table-light">
                             <tr>
                                 <th class="px-4 py-3">No</th>

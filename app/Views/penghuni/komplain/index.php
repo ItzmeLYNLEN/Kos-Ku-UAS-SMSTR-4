@@ -15,7 +15,7 @@ Komplain Fasilitas - Si-Kos
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover m-0">
+                    <table class="table table-hover m-0 w-100">
                         <thead class="table-light">
                             <tr>
                                 <th class="px-4">Tanggal</th>
@@ -25,34 +25,28 @@ Komplain Fasilitas - Si-Kos
                             </tr>
                         </thead>
                         <tbody>
-                            <?php if(empty($komplain)): ?>
-                                <tr>
-                                    <td colspan="4" class="text-center py-4 text-muted">Belum ada laporan komplain.</td>
-                                </tr>
-                            <?php else: ?>
-                                <?php foreach($komplain as $k): ?>
-                                <tr>
-                                    <td class="px-4"><?= date('d M Y, H:i', strtotime($k['created_at'])) ?></td>
-                                    <td><?= $k['deskripsi'] ?></td>
-                                    <td>
-                                        <?php if($k['foto_bukti']): ?>
-                                            <a href="<?= base_url('uploads/komplain/' . $k['foto_bukti']) ?>" target="_blank" class="btn btn-outline-secondary btn-sm">Lihat Foto</a>
-                                        <?php else: ?>
-                                            <span class="text-muted small">Tidak ada foto</span>
-                                        <?php endif; ?>
-                                    </td>
-                                    <td>
-                                        <?php if($k['status_perbaikan'] == 'Pending'): ?>
-                                            <span class="badge bg-danger">Pending</span>
-                                        <?php elseif($k['status_perbaikan'] == 'Proses'): ?>
-                                            <span class="badge bg-warning text-dark">Diproses</span>
-                                        <?php else: ?>
-                                            <span class="badge bg-success">Selesai</span>
-                                        <?php endif; ?>
-                                    </td>
-                                </tr>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
+                            <?php foreach($komplain as $k): ?>
+                            <tr>
+                                <td class="px-4"><?= date('d M Y, H:i', strtotime($k['created_at'])) ?></td>
+                                <td><?= $k['deskripsi'] ?></td>
+                                <td>
+                                    <?php if($k['foto_bukti']): ?>
+                                        <a href="<?= base_url('uploads/komplain/' . $k['foto_bukti']) ?>" target="_blank" class="btn btn-outline-secondary btn-sm">Lihat Foto</a>
+                                    <?php else: ?>
+                                        <span class="text-muted small">Tidak ada foto</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <?php if($k['status_perbaikan'] == 'Pending'): ?>
+                                        <span class="badge bg-danger">Pending</span>
+                                    <?php elseif($k['status_perbaikan'] == 'Proses'): ?>
+                                        <span class="badge bg-warning text-dark">Diproses</span>
+                                    <?php else: ?>
+                                        <span class="badge bg-success">Selesai</span>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                            <?php endforeach; ?>
                         </tbody>
                     </table>
                 </div>

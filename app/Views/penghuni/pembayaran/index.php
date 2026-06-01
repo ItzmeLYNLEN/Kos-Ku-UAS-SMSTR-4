@@ -13,7 +13,7 @@ Bayar Tagihan - Si-Kos
             <div class="card shadow-sm border-0 mb-4">
                 <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-hover m-0 align-middle">
+                        <table class="table table-hover m-0 align-middle w-100">
                             <thead class="table-light">
                                 <tr>
                                     <th class="px-4 py-3" width="5%">
@@ -26,21 +26,17 @@ Bayar Tagihan - Si-Kos
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php if(empty($tagihan)): ?>
-                                    <tr><td colspan="5" class="text-center py-4">Semua tagihan sudah lunas.</td></tr>
-                                <?php else: ?>
-                                    <?php foreach($tagihan as $t): ?>
-                                    <tr>
-                                        <td class="px-4">
-                                            <input class="form-check-input checkItem" type="checkbox" name="id_tagihan[]" value="<?= $t['id_tagihan'] ?>" data-harga="<?= $t['nominal_asal'] + $t['nominal_denda'] ?>">
-                                        </td>
-                                        <td class="fw-bold"><?= $t['bulan'] ?> <?= $t['tahun'] ?></td>
-                                        <td>Rp <?= number_format($t['nominal_asal'], 0, ',', '.') ?></td>
-                                        <td>Rp <?= number_format($t['nominal_denda'], 0, ',', '.') ?></td>
-                                        <td class="text-primary fw-bold">Rp <?= number_format($t['nominal_asal'] + $t['nominal_denda'], 0, ',', '.') ?></td>
-                                    </tr>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
+                                <?php foreach($tagihan as $t): ?>
+                                <tr>
+                                    <td class="px-4">
+                                        <input class="form-check-input checkItem" type="checkbox" name="id_tagihan[]" value="<?= $t['id_tagihan'] ?>" data-harga="<?= $t['nominal_asal'] + $t['nominal_denda'] ?>">
+                                    </td>
+                                    <td class="fw-bold"><?= $t['bulan'] ?> <?= $t['tahun'] ?></td>
+                                    <td>Rp <?= number_format($t['nominal_asal'], 0, ',', '.') ?></td>
+                                    <td>Rp <?= number_format($t['nominal_denda'], 0, ',', '.') ?></td>
+                                    <td class="text-primary fw-bold">Rp <?= number_format($t['nominal_asal'] + $t['nominal_denda'], 0, ',', '.') ?></td>
+                                </tr>
+                                <?php endforeach; ?>
                             </tbody>
                         </table>
                     </div>

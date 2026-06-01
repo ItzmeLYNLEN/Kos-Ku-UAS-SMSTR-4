@@ -70,18 +70,40 @@ class PenghuniPembayaranController extends BaseController
         return redirect()->to('/penghuni/pembayaran/invoice/' . $kode_transaksi);
     }
 
-    public function invoice($kode_transaksi)
+    public function invoice($param)
     {
-        $pembayaran = $this->pembayaranModel->where('kode_transaksi', $kode_transaksi)->first();
-        
-        $detail = $this->detailBayarModel->select('tb_tagihan.*')
+        $pembayaran = $this->pembayaranModel->where('kode_transaksi', $param)->first();
+
+        if ($pembayaran) {
+            $semua_detail = $this->detailBayarModel->select('tb_tagihan.*')
                                          ->join('tb_tagihan', 'tb_tagihan.id_tagihan = tb_detail_bayar.id_tagihan')
                                          ->where('id_bayar', $pembayaran['id_bayar'])
                                          ->findAll();
-        
+        } else {
+            $detail = $this->detailBayarModel->where('id_tagihan', $param)->first();
+
+            if (!$detail) {
+                session()->setFlashdata('pesan_error', 'Kwitansi fisik tidak tersedia karena tagihan ini dilunasi secara manual oleh Admin.');
+                return redirect()->back();
+            }
+
+            $pembayaran = $this->pembayaranModel->find($detail['id_bayar']);
+            $semua_detail = $this->detailBayarModel->select('tb_tagihan.*')
+                                         ->join('tb_tagihan', 'tb_tagihan.id_tagihan = tb_detail_bayar.id_tagihan')
+                                         ->where('id_bayar', $pembayaran['id_bayar'])
+                                         ->findAll();
+        }
+
+        $profilModel = new \App\Models\ProfilPenghuniModel();
+        $p = $profilModel->select('tb_profil_penghuni.*, tb_kamar.no_kamar')
+                         ->join('tb_kamar', 'tb_kamar.id_kamar = tb_profil_penghuni.id_kamar', 'left')
+                         ->where('tb_profil_penghuni.id_pengguna', session()->get('id_pengguna'))
+                         ->first();
+
         $data = [
             'pembayaran' => $pembayaran,
-            'detail'     => $detail
+            'detail'     => $semua_detail,
+            'p'          => $p 
         ];
 
         return view('penghuni/pembayaran/invoice', $data);
