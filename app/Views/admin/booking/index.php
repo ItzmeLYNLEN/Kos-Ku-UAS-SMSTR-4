@@ -21,49 +21,47 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php if(empty($booking)): ?>
-                        <tr><td colspan="4" class="text-center py-4 text-muted">Data kosong.</td></tr>
-                    <?php else: ?>
-                        <?php foreach($booking as $b): ?>
-                        <tr>
-                            <td class="px-4">
-                                <strong><?= $b['nama_calon'] ?></strong><br>
-                                <small class="text-muted"><?= $b['no_wa'] ?></small>
-                            </td>
-                            <td>No. <?= $b['no_kamar'] ?></td>
-                            <td>
-                                <?php if($b['status_booking'] == 'Dibatalkan (Penuh)'): ?>
-                                    <span class="badge bg-danger text-white">Dibatalkan</span>
-                                <?php elseif($b['status_booking'] == 'Paid'): ?>
-                                    <span class="badge bg-success">Paid</span>
-                                <?php else: ?>
-                                    <span class="badge bg-info text-dark"><?= $b['status_booking'] ?></span>
-                                <?php endif; ?>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-sm btn-info text-white" data-bs-toggle="modal" data-bs-target="#detailModal<?= $b['id_booking'] ?>">
-                                    <i class="bi bi-eye"></i> Detail
-                                </button>
+                    <?php foreach($booking as $b): ?>
+                    <tr>
+                        <td class="px-4">
+                            <strong><?= $b['nama_calon'] ?></strong><br>
+                            <small class="text-muted"><?= $b['no_wa'] ?></small>
+                        </td>
+                        <td>No. <?= $b['no_kamar'] ?></td>
+                        <td>
+                            <?php if($b['status_booking'] == 'Dibatalkan (Penuh)'): ?>
+                                <span class="badge bg-danger text-white">Dibatalkan</span>
+                            <?php elseif($b['status_booking'] == 'Paid'): ?>
+                                <span class="badge bg-success">Paid</span>
+                            <?php else: ?>
+                                <span class="badge bg-info text-dark"><?= $b['status_booking'] ?></span>
+                            <?php endif; ?>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-info text-white" data-bs-toggle="modal" data-bs-target="#detailModal<?= $b['id_booking'] ?>">
+                                <i class="bi bi-eye"></i> Detail
+                            </button>
 
-                                <?php if($b['status_booking'] == 'Menunggu Persetujuan'): ?>
-                                    <a href="<?= base_url('admin/booking/approve/'.$b['id_booking']) ?>" class="btn btn-sm btn-primary">Setujui</a>
-                                <?php elseif($b['status_booking'] == 'Paid'): ?>
-                                    <a href="<?= base_url('admin/booking/create-account/'.$b['id_booking']) ?>" class="btn btn-sm btn-success">Buat Akun</a>
-                                <?php else: ?>
-                                    <button type="button" class="btn btn-sm btn-light text-danger btn-hapus" data-url="<?= base_url('admin/booking/delete/'.$b['id_booking']) ?>">
-                                        <i class="bi bi-trash"></i> Hapus
-                                    </button>
-                                <?php endif; ?>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
+                            <?php if($b['status_booking'] == 'Menunggu Persetujuan'): ?>
+                                <a href="<?= base_url('admin/booking/approve/'.$b['id_booking']) ?>" class="btn btn-sm btn-primary">Setujui</a>
+                            <?php elseif($b['status_booking'] == 'Paid'): ?>
+                                <a href="<?= base_url('admin/booking/create-account/'.$b['id_booking']) ?>" class="btn btn-sm btn-success">Buat Akun</a>
+                            <?php else: ?>
+                                <button type="button" class="btn btn-sm btn-light text-danger btn-hapus" data-url="<?= base_url('admin/booking/delete/'.$b['id_booking']) ?>">
+                                    <i class="bi bi-trash"></i> Hapus
+                                </button>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
         </div>
     </div>
 </div>
+<?= $this->endSection() ?>
 
+<?= $this->section('scripts') ?>
 <?php if(!empty($booking)): ?>
     <?php foreach($booking as $b): ?>
     <div class="modal fade" id="detailModal<?= $b['id_booking'] ?>" tabindex="-1" aria-labelledby="detailModalLabel<?= $b['id_booking'] ?>" aria-hidden="true">
@@ -109,9 +107,6 @@
     <?php endforeach; ?>
 <?php endif; ?>
 
-<?= $this->endSection() ?>
-
-<?= $this->section('scripts') ?>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     <?php if(session()->getFlashdata('pesan')): ?>

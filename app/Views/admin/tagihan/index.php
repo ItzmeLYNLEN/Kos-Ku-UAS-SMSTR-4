@@ -24,7 +24,7 @@ Kelola Tagihan - Si-Kos
         <div class="card shadow-sm border-0">
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover m-0 align-middle">
+                    <table class="table table-hover m-0 align-middle w-100">
                         <thead class="table-light">
                             <tr>
                                 <th class="px-4">No</th>
@@ -37,42 +37,36 @@ Kelola Tagihan - Si-Kos
                             </tr>
                         </thead>
                         <tbody>
-                            <?php if(empty($tagihan)): ?>
-                                <tr>
-                                    <td colspan="7" class="text-center py-4 text-muted">Belum ada data tagihan.</td>
-                                </tr>
-                            <?php else: ?>
-                                <?php $no = 1; foreach($tagihan as $t): ?>
-                                <tr>
-                                    <td class="px-4"><?= $no++ ?></td>
-                                    <td>
-                                        <strong><?= $t['nama_lengkap'] ?></strong><br>
-                                        <small class="text-muted">Kamar: <?= $t['no_kamar'] ?? '-' ?></small>
-                                    </td>
-                                    <td><?= $t['bulan'] ?> <?= $t['tahun'] ?></td>
-                                    <td>Rp <?= number_format($t['nominal_asal'], 0, ',', '.') ?></td>
-                                    <td class="<?= $t['nominal_denda'] > 0 ? 'text-danger' : '' ?>">
-                                        Rp <?= number_format($t['nominal_denda'], 0, ',', '.') ?>
-                                    </td>
-                                    <td>
-                                        <?php if($t['status_bayar'] == 'Lunas'): ?>
-                                            <span class="badge bg-success">Lunas</span>
-                                        <?php else: ?>
-                                            <span class="badge bg-danger">Belum Bayar</span>
-                                        <?php endif; ?>
-                                    </td>
-                                    <td>
-                                        <?php if($t['status_bayar'] == 'Belum Bayar'): ?>
-                                            <a href="<?= base_url('admin/tagihan/lunasi/'.$t['id_tagihan']) ?>" class="btn btn-sm btn-success btn-lunasi">
-                                                <i class="bi bi-check-circle"></i> Lunasi
-                                            </a>
-                                        <?php else: ?>
-                                            <span class="text-muted small"><i class="bi bi-check2-all"></i> Selesai</span>
-                                        <?php endif; ?>
-                                    </td>
-                                </tr>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
+                            <?php $no = 1; foreach($tagihan as $t): ?>
+                            <tr>
+                                <td class="px-4"><?= $no++ ?></td>
+                                <td>
+                                    <strong><?= $t['nama_lengkap'] ?></strong><br>
+                                    <small class="text-muted">Kamar: <?= $t['no_kamar'] ?? '-' ?></small>
+                                </td>
+                                <td><?= $t['bulan'] ?> <?= $t['tahun'] ?></td>
+                                <td>Rp <?= number_format($t['nominal_asal'], 0, ',', '.') ?></td>
+                                <td class="<?= $t['nominal_denda'] > 0 ? 'text-danger' : '' ?>">
+                                    Rp <?= number_format($t['nominal_denda'], 0, ',', '.') ?>
+                                </td>
+                                <td>
+                                    <?php if($t['status_bayar'] == 'Lunas'): ?>
+                                        <span class="badge bg-success">Lunas</span>
+                                    <?php else: ?>
+                                        <span class="badge bg-danger">Belum Bayar</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <?php if($t['status_bayar'] == 'Belum Bayar'): ?>
+                                        <a href="<?= base_url('admin/tagihan/lunasi/'.$t['id_tagihan']) ?>" class="btn btn-sm btn-success btn-lunasi">
+                                            <i class="bi bi-check-circle"></i> Lunasi
+                                        </a>
+                                    <?php else: ?>
+                                        <span class="text-muted small"><i class="bi bi-check2-all"></i> Selesai</span>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                            <?php endforeach; ?>
                         </tbody>
                     </table>
                 </div>
@@ -86,21 +80,11 @@ Kelola Tagihan - Si-Kos
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     <?php if(session()->getFlashdata('pesan')): ?>
-        Swal.fire({ 
-            icon: 'success', 
-            title: 'Berhasil!', 
-            text: '<?= session()->getFlashdata('pesan') ?>', 
-            showConfirmButton: false, 
-            timer: 2500 
-        });
+        Swal.fire({ icon: 'success', title: 'Berhasil!', text: '<?= session()->getFlashdata('pesan') ?>', showConfirmButton: false, timer: 2500 });
     <?php endif; ?>
 
     <?php if(session()->getFlashdata('pesan_error')): ?>
-        Swal.fire({ 
-            icon: 'error', 
-            title: 'Oops...', 
-            text: '<?= session()->getFlashdata('pesan_error') ?>' 
-        });
+        Swal.fire({ icon: 'error', title: 'Oops...', text: '<?= session()->getFlashdata('pesan_error') ?>' });
     <?php endif; ?>
 
     $('.btn-magic').on('click', function(e) {
@@ -115,11 +99,7 @@ Kelola Tagihan - Si-Kos
             cancelButtonColor: '#6c757d',
             confirmButtonText: 'Ya, Generate!',
             cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                form.submit();
-            }
-        });
+        }).then((result) => { if (result.isConfirmed) form.submit(); });
     });
 
     $('.btn-lunasi').on('click', function(e) {
@@ -134,11 +114,7 @@ Kelola Tagihan - Si-Kos
             cancelButtonColor: '#6c757d',
             confirmButtonText: 'Ya, Lunas!',
             cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.location.href = url;
-            }
-        });
+        }).then((result) => { if (result.isConfirmed) window.location.href = url; });
     });
 </script>
 <?= $this->endSection() ?>

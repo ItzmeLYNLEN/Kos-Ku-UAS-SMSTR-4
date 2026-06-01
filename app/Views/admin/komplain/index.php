@@ -14,7 +14,7 @@ Kelola Komplain - Si-Kos
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover m-0 align-middle">
+                    <table class="table table-hover m-0 align-middle w-100">
                         <thead class="table-light">
                             <tr>
                                 <th class="px-4">Tanggal</th>
@@ -25,39 +25,33 @@ Kelola Komplain - Si-Kos
                             </tr>
                         </thead>
                         <tbody>
-                            <?php if(empty($komplain)): ?>
-                                <tr>
-                                    <td colspan="5" class="text-center py-4 text-muted">Belum ada laporan komplain.</td>
-                                </tr>
-                            <?php else: ?>
-                                <?php foreach($komplain as $k): ?>
-                                <tr>
-                                    <td class="px-4"><?= date('d M Y', strtotime($k['created_at'])) ?></td>
-                                    <td class="fw-bold">
-                                        <?= $k['nama_lengkap'] ?> <br>
-                                        <span class="badge bg-secondary">Kamar <?= $k['no_kamar'] ?></span>
-                                    </td>
-                                    <td><?= $k['deskripsi'] ?></td>
-                                    <td>
-                                        <?php if($k['foto_bukti']): ?>
-                                            <a href="<?= base_url('uploads/komplain/' . $k['foto_bukti']) ?>" target="_blank" class="btn btn-outline-secondary btn-sm">Lihat</a>
-                                        <?php else: ?>
-                                            -
-                                        <?php endif; ?>
-                                    </td>
-                                    <td class="px-4 text-center">
-                                        <form action="<?= base_url('admin/komplain/update/' . $k['id_komplain']) ?>" method="post" class="d-flex align-items-center gap-2">
-                                            <select name="status_perbaikan" class="form-select form-select-sm">
-                                                <option value="Pending" <?= ($k['status_perbaikan'] == 'Pending') ? 'selected' : '' ?>>Pending</option>
-                                                <option value="Proses" <?= ($k['status_perbaikan'] == 'Proses') ? 'selected' : '' ?>>Proses</option>
-                                                <option value="Selesai" <?= ($k['status_perbaikan'] == 'Selesai') ? 'selected' : '' ?>>Selesai</option>
-                                            </select>
-                                            <button type="submit" class="btn btn-primary btn-sm">Simpan</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
+                            <?php foreach($komplain as $k): ?>
+                            <tr>
+                                <td class="px-4"><?= date('d M Y', strtotime($k['created_at'])) ?></td>
+                                <td class="fw-bold">
+                                    <?= $k['nama_lengkap'] ?> <br>
+                                    <span class="badge bg-secondary">Kamar <?= $k['no_kamar'] ?></span>
+                                </td>
+                                <td><?= $k['deskripsi'] ?></td>
+                                <td>
+                                    <?php if($k['foto_bukti']): ?>
+                                        <a href="<?= base_url('uploads/komplain/' . $k['foto_bukti']) ?>" target="_blank" class="btn btn-outline-secondary btn-sm">Lihat</a>
+                                    <?php else: ?>
+                                        -
+                                    <?php endif; ?>
+                                </td>
+                                <td class="px-4 text-center">
+                                    <form action="<?= base_url('admin/komplain/update/' . $k['id_komplain']) ?>" method="post" class="d-flex align-items-center gap-2">
+                                        <select name="status_perbaikan" class="form-select form-select-sm">
+                                            <option value="Pending" <?= ($k['status_perbaikan'] == 'Pending') ? 'selected' : '' ?>>Pending</option>
+                                            <option value="Proses" <?= ($k['status_perbaikan'] == 'Proses') ? 'selected' : '' ?>>Proses</option>
+                                            <option value="Selesai" <?= ($k['status_perbaikan'] == 'Selesai') ? 'selected' : '' ?>>Selesai</option>
+                                        </select>
+                                        <button type="submit" class="btn btn-primary btn-sm">Simpan</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            <?php endforeach; ?>
                         </tbody>
                     </table>
                 </div>

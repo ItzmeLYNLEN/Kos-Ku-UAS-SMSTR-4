@@ -15,7 +15,7 @@ Manajemen Penghuni - Si-Kos
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover m-0 align-middle">
+                    <table class="table table-hover m-0 align-middle w-100">
                         <thead class="table-light">
                             <tr>
                                 <th class="px-4">Nama Lengkap</th>
@@ -26,24 +26,20 @@ Manajemen Penghuni - Si-Kos
                             </tr>
                         </thead>
                         <tbody>
-                            <?php if(empty($penghuni)): ?>
-                                <tr><td colspan="5" class="text-center py-4 text-muted">Belum ada penghuni aktif.</td></tr>
-                            <?php else: ?>
-                                <?php foreach($penghuni as $p): ?>
-                                <tr>
-                                    <td class="px-4 fw-bold"><?= $p['nama_lengkap'] ?></td>
-                                    <td><?= $p['no_kamar'] ?></td>
-                                    <td><?= $p['nama_tipe'] ?></td>
-                                    <td><?= $p['no_wa'] ?></td>
-                                    <td class="text-center">
-                                        <button type="button" class="btn btn-info text-white btn-sm" data-bs-toggle="modal" data-bs-target="#detailModal<?= $p['id_profil_penghuni'] ?>">
-                                            <i class="bi bi-eye"></i> Detail
-                                        </button>
-                                        <a href="<?= base_url('admin/penghuni/delete/' . $p['id_profil_penghuni']) ?>" class="btn btn-danger btn-sm tombol-hapus"><i class="bi bi-box-arrow-right"></i> Keluar</a>
-                                    </td>
-                                </tr>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
+                            <?php foreach($penghuni as $p): ?>
+                            <tr>
+                                <td class="px-4 fw-bold"><?= $p['nama_lengkap'] ?></td>
+                                <td><?= $p['no_kamar'] ?></td>
+                                <td><?= $p['nama_tipe'] ?></td>
+                                <td><?= $p['no_wa'] ?></td>
+                                <td class="text-center">
+                                    <button type="button" class="btn btn-info text-white btn-sm" data-bs-toggle="modal" data-bs-target="#detailModal<?= $p['id_profil_penghuni'] ?>">
+                                        <i class="bi bi-eye"></i> Detail
+                                    </button>
+                                    <a href="<?= base_url('admin/penghuni/delete/' . $p['id_profil_penghuni']) ?>" class="btn btn-danger btn-sm tombol-hapus"><i class="bi bi-box-arrow-right"></i> Keluar</a>
+                                </td>
+                            </tr>
+                            <?php endforeach; ?>
                         </tbody>
                     </table>
                 </div>
@@ -51,7 +47,9 @@ Manajemen Penghuni - Si-Kos
         </div>
     </div>
 </div>
+<?= $this->endSection() ?>
 
+<?= $this->section('scripts') ?>
 <?php if(!empty($penghuni)): ?>
     <?php foreach($penghuni as $p): ?>
     <div class="modal fade" id="detailModal<?= $p['id_profil_penghuni'] ?>" tabindex="-1" aria-labelledby="detailModalLabel<?= $p['id_profil_penghuni'] ?>" aria-hidden="true">
@@ -106,9 +104,6 @@ Manajemen Penghuni - Si-Kos
     <?php endforeach; ?>
 <?php endif; ?>
 
-<?= $this->endSection() ?>
-
-<?= $this->section('scripts') ?>
 <script>
     <?php if(session()->getFlashdata('pesan')): ?>
         Swal.fire({ icon: 'success', title: 'Berhasil!', text: '<?= session()->getFlashdata('pesan') ?>', showConfirmButton: false, timer: 2000 });

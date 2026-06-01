@@ -33,7 +33,7 @@
         <div class="card shadow-sm border-0">
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover m-0">
+                    <table class="table table-hover m-0 w-100">
                         <thead class="table-light">
                             <tr>
                                 <th class="px-4">No</th>
@@ -45,29 +45,27 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php if(empty($laporan)): ?>
-                                <tr><td colspan="6" class="text-center py-4 text-muted">Tidak ada data pembayaran untuk periode ini.</td></tr>
-                            <?php else: ?>
-                                <?php $no = 1; $total = 0; foreach($laporan as $l): ?>
-                                <?php 
-                                    // Hitung nominal + denda jika ada
-                                    $total_bayar = $l['nominal_asal'] + $l['nominal_denda']; 
-                                ?>
-                                <tr>
-                                    <td class="px-4"><?= $no++ ?></td>
-                                    <td class="fw-bold"><?= $l['nama_lengkap'] ?></td>
-                                    <td>No. <?= $l['no_kamar'] ?></td>
-                                    <td><?= $l['bulan'] ?> <?= $l['tahun'] ?></td>
-                                    <td><?= date('d M Y', strtotime($l['updated_at'])) ?></td>
-                                    <td class="text-success fw-bold">Rp <?= number_format($total_bayar, 0, ',', '.') ?></td>
-                                </tr>
-                                <?php $total += $total_bayar; endforeach; ?>
-                                <tr class="table-light fw-bold">
-                                    <td colspan="5" class="text-end px-4">TOTAL PENDAPATAN:</td>
-                                    <td class="text-primary fs-5">Rp <?= number_format($total, 0, ',', '.') ?></td>
-                                </tr>
-                            <?php endif; ?>
+                            <?php $no = 1; $total = 0; foreach($laporan as $l): ?>
+                            <?php 
+                                // Hitung nominal + denda jika ada
+                                $total_bayar = $l['nominal_asal'] + $l['nominal_denda']; 
+                            ?>
+                            <tr>
+                                <td class="px-4"><?= $no++ ?></td>
+                                <td class="fw-bold"><?= $l['nama_lengkap'] ?></td>
+                                <td>No. <?= $l['no_kamar'] ?></td>
+                                <td><?= $l['bulan'] ?> <?= $l['tahun'] ?></td>
+                                <td><?= date('d M Y', strtotime($l['updated_at'])) ?></td>
+                                <td class="text-success fw-bold">Rp <?= number_format($total_bayar, 0, ',', '.') ?></td>
+                            </tr>
+                            <?php $total += $total_bayar; endforeach; ?>
                         </tbody>
+                        <tfoot class="table-light fw-bold">
+                            <tr>
+                                <td colspan="5" class="text-end px-4">TOTAL PENDAPATAN:</td>
+                                <td class="text-primary fs-5">Rp <?= number_format($total ?? 0, 0, ',', '.') ?></td>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>
