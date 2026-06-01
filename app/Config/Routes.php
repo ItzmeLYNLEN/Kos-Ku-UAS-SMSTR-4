@@ -6,15 +6,17 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 $routes->get('/', 'Home::index');
-$routes->get('/', 'Auth::index');
 $routes->get('login', 'Auth::index');
 $routes->post('login/process', 'Auth::process');
 $routes->get('logout', 'Auth::logout');
 $routes->post('/ganti-password/process', 'Auth::processGantiPassword', ['filter' => 'penghuni']);
-$routes->get('/kamar', 'Home::daftarKamar');
 
+$routes->get('kamar', 'Home::daftarKamar');
+$routes->get('home/daftarkamar', 'Home::daftarKamar');
 
-$routes->post('/booking/submit', 'Home::submitBooking');
+$routes->post('booking/submit', 'Home::submitBooking');
+$routes->post('submitBooking', 'Home::submitBooking');
+
 $routes->get('track/(:num)', 'Home::track/$1');
 $routes->get('pay-dp/(:num)', 'Home::payDP/$1');
 
