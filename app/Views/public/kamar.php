@@ -62,6 +62,11 @@
             <?php else: ?>
                 <?php foreach($kamar_tersedia as $k): 
                     $isVip = (stripos($k['nama_tipe'], 'vip') !== false);
+<<<<<<< HEAD
+=======
+                    $baseUrlRaw = rtrim(base_url(), '/');
+                    $imgDir = (strpos($baseUrlRaw, 'public') !== false) ? '/uploads/kamar/' : '/public/uploads/kamar/';
+>>>>>>> 9e56b391a6e6e77db399b989c072f7fe1426b1e0
                     $imgPlaceholder = 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&q=80&w=500';
                 ?>
                 <div class="col-lg-3 col-md-6 d-flex align-items-stretch">
@@ -71,7 +76,11 @@
                                 <div class="kamar-badge-vip"><i class="fa-solid fa-star"></i> VIP</div>
                             <?php endif; ?>
                             <div class="kamar-badge-top">Kamar <?= $k['no_kamar'] ?></div>
+<<<<<<< HEAD
                             <img src="<?= !empty($k['foto_1']) ? base_url('uploads/kamar/' . $k['foto_1']) : $imgPlaceholder ?>" alt="<?= $k['nama_tipe'] ?>">
+=======
+                            <img src="<?= !empty($k['foto_1']) ? $baseUrlRaw . $imgDir . $k['foto_1'] : $imgPlaceholder ?>" alt="<?= $k['nama_tipe'] ?>">
+>>>>>>> 9e56b391a6e6e77db399b989c072f7fe1426b1e0
                         </div>
                         <div class="kamar-body">
                             <div class="kamar-tipe"><?= $k['nama_tipe'] ?></div>
@@ -101,16 +110,28 @@
                                         <div id="carouselKamar<?= $k['id_kamar'] ?>" class="carousel slide" data-bs-ride="carousel">
                                             <div class="carousel-inner rounded-4 shadow-sm" style="height: 300px;">
                                                 <div class="carousel-item active h-100">
+<<<<<<< HEAD
                                                     <img src="<?= !empty($k['foto_1']) ? base_url('uploads/kamar/' . $k['foto_1']) : $imgPlaceholder ?>" class="d-block w-100 h-100 object-fit-cover" alt="Foto 1">
                                                 </div>
                                                 <?php if(!empty($k['foto_2'])): ?>
                                                 <div class="carousel-item h-100">
                                                     <img src="<?= base_url('uploads/kamar/' . $k['foto_2']) ?>" class="d-block w-100 h-100 object-fit-cover" alt="Foto 2">
+=======
+                                                    <img src="<?= !empty($k['foto_1']) ? $baseUrlRaw . $imgDir . $k['foto_1'] : $imgPlaceholder ?>" class="d-block w-100 h-100 object-fit-cover" alt="Foto 1">
+                                                </div>
+                                                <?php if(!empty($k['foto_2'])): ?>
+                                                <div class="carousel-item h-100">
+                                                    <img src="<?= $baseUrlRaw . $imgDir . $k['foto_2'] ?>" class="d-block w-100 h-100 object-fit-cover" alt="Foto 2">
+>>>>>>> 9e56b391a6e6e77db399b989c072f7fe1426b1e0
                                                 </div>
                                                 <?php endif; ?>
                                                 <?php if(!empty($k['foto_3'])): ?>
                                                 <div class="carousel-item h-100">
+<<<<<<< HEAD
                                                     <img src="<?= base_url('uploads/kamar/' . $k['foto_3']) ?>" class="d-block w-100 h-100 object-fit-cover" alt="Foto 3">
+=======
+                                                    <img src="<?= $baseUrlRaw . $imgDir . $k['foto_3'] ?>" class="d-block w-100 h-100 object-fit-cover" alt="Foto 3">
+>>>>>>> 9e56b391a6e6e77db399b989c072f7fe1426b1e0
                                                 </div>
                                                 <?php endif; ?>
                                             </div>
