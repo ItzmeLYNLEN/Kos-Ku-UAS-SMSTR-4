@@ -6,17 +6,22 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 $routes->get('/', 'Home::index');
-$routes->get('/', 'Auth::index');
 $routes->get('login', 'Auth::index');
 $routes->post('login/process', 'Auth::process');
 $routes->get('logout', 'Auth::logout');
 $routes->post('/ganti-password/process', 'Auth::processGantiPassword', ['filter' => 'penghuni']);
-$routes->get('/kamar', 'Home::daftarKamar');
 
+$routes->get('kamar', 'Home::daftarKamar');
+$routes->get('home/daftarkamar', 'Home::daftarKamar');
 
-$routes->post('/booking/submit', 'Home::submitBooking');
+$routes->post('booking/submit', 'Home::submitBooking');
+$routes->post('submitBooking', 'Home::submitBooking');
+
 $routes->get('track/(:num)', 'Home::track/$1');
 $routes->get('pay-dp/(:num)', 'Home::payDP/$1');
+$routes->get('home/successDP/(:num)', 'Home::successDP/$1');
+
+$routes->post('webhook/midtrans', 'WebhookController::index');
 
 //middleware
 $routes->group('admin', ['filter' => 'admin'], static function ($routes) 
@@ -69,6 +74,8 @@ $routes->group('admin', ['filter' => 'admin'], static function ($routes)
     $routes->get('kelola-admin/create', 'AdminProfilController::create');
     $routes->post('kelola-admin/store', 'AdminProfilController::store');
     $routes->get('kelola-admin/delete/(:num)', 'AdminProfilController::delete/$1');
+
+    $routes->get('tagihan/hapus/(:num)', 'AdminTagihanController::hapus/$1');
 });
 
 $routes->group('penghuni', ['filter' => 'penghuni'], static function ($routes) 
@@ -84,9 +91,12 @@ $routes->group('penghuni', ['filter' => 'penghuni'], static function ($routes)
     $routes->post('pembayaran/checkout', 'PenghuniPembayaranController::checkout');
     $routes->get('pembayaran/invoice/(:segment)', 'PenghuniPembayaranController::invoice/$1');
     $routes->get('pembayaran/simulate/(:segment)', 'PenghuniPembayaranController::simulatePay/$1');
+    $routes->get('pembayaran/success/(:num)', 'PenghuniPembayaranController::successPay/$1');
 
     $routes->get('profil', 'PenghuniProfilController::index');
     $routes->post('profil/update', 'PenghuniProfilController::update');
+
+    $routes->post('pembayaran/checkout', 'PenghuniPembayaranController::checkout');
 });
 
 $routes->get('/ganti-password', 'Auth::gantiPassword', ['filter' => 'penghuni']);

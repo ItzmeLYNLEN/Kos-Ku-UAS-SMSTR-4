@@ -5,6 +5,8 @@ namespace App\Controllers;
 use App\Models\TagihanModel;
 use App\Models\PembayaranModel;
 use App\Models\DetailBayarModel;
+use Midtrans\Config;
+use Midtrans\Snap;
 
 class PenghuniPembayaranController extends BaseController
 {
@@ -34,40 +36,90 @@ class PenghuniPembayaranController extends BaseController
 
     public function checkout()
     {
-        $id_tagihan = $this->request->getVar('id_tagihan');
-        $metode_bayar = $this->request->getVar('metode_bayar');
+        $id_tagihan = $this->request->getPost('id_tagihan');
+        
+        $tagihanModel = new \App\Models\TagihanModel();
+        $tagihan = $tagihanModel->find($id_tagihan);
 
-        if (!$id_tagihan) {
-            session()->setFlashdata('pesan_error', 'Pilih minimal satu tagihan untuk dibayar.');
-            return redirect()->to('/penghuni/pembayaran');
+        if (!$tagihan) {
+            return redirect()->back();
         }
 
-        $total = 0;
-        foreach ($id_tagihan as $id) {
-            $tagihan = $this->tagihanModel->find($id);
-            $total += ($tagihan['nominal_asal'] + $tagihan['nominal_denda']);
-        }
+        $total_bayar = (int) round($tagihan['nominal_asal'] + $tagihan['nominal_denda']);
+        $kode_transaksi = 'INV-' . $id_tagihan . '-' . time();
 
-        $kode_transaksi = 'INV-' . time() . '-' . session()->get('id_pengguna');
-
-        $this->pembayaranModel->insert([
+        $pembayaranModel = new \App\Models\PembayaranModel();
+        $pembayaranModel->insert([
             'kode_transaksi'   => $kode_transaksi,
-            'total_bayar'      => $total,
-            'metode_bayar'     => $metode_bayar,
-            'status_transaksi' => 'Pending',
-            'waktu_expired'    => date('Y-m-d H:i:s', strtotime('+1 day'))
+            'total_bayar'      => $total_bayar,
+            'metode_bayar'     => 'Midtrans',
+            'status_transaksi' => 'Pending'
+        ]);
+        $id_bayar = $pembayaranModel->getInsertID();
+
+        $detailBayarModel = new \App\Models\DetailBayarModel();
+        $detailBayarModel->insert([
+            'id_bayar'   => $id_bayar,
+            'id_tagihan' => $id_tagihan
         ]);
 
-        $id_bayar = $this->pembayaranModel->getInsertID();
+        Config::$serverKey = getenv('MIDTRANS_SERVER_KEY'); 
+        Config::$isProduction = false;
+        Config::$isSanitized = true;
+        Config::$is3ds = true;
 
-        foreach ($id_tagihan as $id) {
-            $this->detailBayarModel->insert([
-                'id_bayar'   => $id_bayar,
-                'id_tagihan' => $id
-            ]);
+        $params = [
+            'transaction_details' => [
+                'order_id'     => $kode_transaksi, 
+                'gross_amount' => $total_bayar,
+            ],
+            'customer_details' => [
+                'first_name' => session()->get('username'), 
+            ],
+            'item_details' => [[
+                'id'       => 'TAGIHAN-' . $tagihan['bulan'] . '-' . $tagihan['tahun'],
+                'price'    => $total_bayar,
+                'quantity' => 1,
+                'name'     => 'Tagihan Kos Bulan ' . $tagihan['bulan'] . ' ' . $tagihan['tahun']
+            ]]
+        ];
+
+        $snapToken = Snap::getSnapToken($params);
+
+        $data = [
+            'tagihan'     => $tagihan,
+            'snapToken'   => $snapToken,
+            'total_bayar' => $total_bayar
+        ];
+
+        return view('penghuni/pembayaran/pay_midtrans', $data);
+    }
+
+    public function successPay($id_tagihan)
+    {
+        $db = \Config\Database::connect();
+        
+        $cekTagihan = $db->table('tb_tagihan')->where('id_tagihan', $id_tagihan)->get()->getRowArray();
+        
+        if ($cekTagihan) {
+            $db->table('tb_tagihan')->where('id_tagihan', $id_tagihan)->update(['status_bayar' => 'Lunas']);
+            
+            $detail = $db->table('tb_detail_bayar')
+                         ->where('id_tagihan', $id_tagihan)
+                         ->orderBy('id_detail', 'DESC')
+                         ->get()
+                         ->getRowArray();
+                         
+            if ($detail) {
+                $db->table('tb_pembayaran')
+                   ->where('id_bayar', $detail['id_bayar'])
+                   ->update(['status_transaksi' => 'Success']);
+            }
+
+            session()->setFlashdata('pesan', 'Pembayaran tagihan berhasil dan sudah lunas!');
         }
 
-        return redirect()->to('/penghuni/pembayaran/invoice/' . $kode_transaksi);
+        return redirect()->to('/penghuni/tagihan');
     }
 
     public function invoice($param)

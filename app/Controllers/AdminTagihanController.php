@@ -105,4 +105,20 @@ class AdminTagihanController extends BaseController
         return redirect()->to('/admin/tagihan');
     }
 
+    public function hapus($id_tagihan)
+    {
+        $tagihanModel = new \App\Models\TagihanModel();
+        
+        $tagihan = $tagihanModel->find($id_tagihan);
+        
+        if ($tagihan && $tagihan['status_bayar'] == 'Belum Bayar') {
+            $tagihanModel->delete($id_tagihan);
+            session()->setFlashdata('pesan', 'Tagihan berhasil dihapus.');
+        } else {
+            session()->setFlashdata('pesan_error', 'Gagal menghapus! Tagihan mungkin sudah lunas atau tidak ditemukan.');
+        }
+
+        return redirect()->back();
+    }
+
 }

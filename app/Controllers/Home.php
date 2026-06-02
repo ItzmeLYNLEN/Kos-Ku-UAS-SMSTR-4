@@ -4,6 +4,8 @@ namespace App\Controllers;
 
 use App\Models\KamarModel;
 use App\Models\BookingModel;
+use Midtrans\Config;
+use Midtrans\Snap;
 
 class Home extends BaseController
 {
@@ -66,9 +68,65 @@ class Home extends BaseController
     public function payDP($id_booking)
     {
         $bookingModel = new \App\Models\BookingModel();
-        $bookingModel->update($id_booking, ['status_booking' => 'Paid']);
         
-        session()->setFlashdata('pesan_sukses', 'Pembayaran DP Berhasil! Admin akan segera memproses akun Anda.');
+        $booking = $bookingModel->select('tb_booking.*, tb_kamar.no_kamar, tb_tipe_kamar.harga_dasar, tb_tipe_kamar.nama_tipe')
+                                ->join('tb_kamar', 'tb_kamar.id_kamar = tb_booking.id_kamar')
+                                ->join('tb_tipe_kamar', 'tb_tipe_kamar.id_tipe = tb_kamar.id_tipe')
+                                ->find($id_booking);
+
+        if (!$booking) {
+            return redirect()->back();
+        }
+
+        $dp_amount = (int) round($booking['harga_dasar'] * 0.5);
+
+        Config::$serverKey = getenv('MIDTRANS_SERVER_KEY'); 
+        Config::$isProduction = false;
+        Config::$isSanitized = true;
+        Config::$is3ds = true;
+
+        $params = [
+            'transaction_details' => [
+                'order_id' => 'DP-' . $booking['id_booking'] . '-' . time(), 
+                'gross_amount' => $dp_amount,
+            ],
+            'customer_details' => [
+                'first_name' => $booking['nama_calon'],
+                'email'      => $booking['email'],
+                'phone'      => $booking['no_wa'],
+            ],
+            'item_details' => [[
+                'id'       => 'DP-KAMAR',
+                'price'    => $dp_amount,
+                'quantity' => 1,
+                'name'     => 'DP 50% Kamar ' . $booking['no_kamar'] . ' (' . $booking['nama_tipe'] . ')'
+            ]]
+        ];
+
+        $snapToken = Snap::getSnapToken($params);
+
+        $data = [
+            'b'         => $booking,
+            'dp_amount' => $dp_amount,
+            'snapToken' => $snapToken
+        ];
+
+        return view('public/pay_dp_midtrans', $data);
+    }
+
+   public function successDP($id_booking)
+    {
+        $db = \Config\Database::connect();
+        
+        $cekBooking = $db->table('tb_booking')->where('id_booking', $id_booking)->get()->getRowArray();
+        
+        if ($cekBooking) {
+            $db->table('tb_booking')->where('id_booking', $id_booking)->update(['status_booking' => 'Paid']);
+            session()->setFlashdata('pesan_sukses', 'Pembayaran DP Berhasil Diterima! Admin akan segera memproses akun Anda.');
+        } else {
+            session()->setFlashdata('pesan_error', 'Data booking tidak ditemukan.');
+        }
+
         return redirect()->to('/track/' . $id_booking);
     }
 }

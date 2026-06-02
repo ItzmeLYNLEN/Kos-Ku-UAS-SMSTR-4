@@ -58,9 +58,14 @@ Kelola Tagihan - Si-Kos
                                 </td>
                                 <td>
                                     <?php if($t['status_bayar'] == 'Belum Bayar'): ?>
-                                        <a href="<?= base_url('admin/tagihan/lunasi/'.$t['id_tagihan']) ?>" class="btn btn-sm btn-success btn-lunasi">
-                                            <i class="bi bi-check-circle"></i> Lunasi
-                                        </a>
+                                        <div class="d-flex gap-1">
+                                            <a href="<?= base_url('admin/tagihan/lunasi/'.$t['id_tagihan']) ?>" class="btn btn-sm btn-success btn-lunasi">
+                                                <i class="bi bi-check-circle"></i> Lunasi
+                                            </a>
+                                            <a href="<?= base_url('admin/tagihan/hapus/'.$t['id_tagihan']) ?>" class="btn btn-sm btn-danger btn-hapus">
+                                                <i class="bi bi-trash"></i> Hapus
+                                            </a>
+                                        </div>
                                     <?php else: ?>
                                         <span class="text-muted small"><i class="bi bi-check2-all"></i> Selesai</span>
                                     <?php endif; ?>
@@ -115,6 +120,23 @@ Kelola Tagihan - Si-Kos
             confirmButtonText: 'Ya, Lunas!',
             cancelButtonText: 'Batal'
         }).then((result) => { if (result.isConfirmed) window.location.href = url; });
+    });
+
+    $('.btn-hapus').on('click', function(e) {
+        e.preventDefault();
+        let url = $(this).attr('href');
+        Swal.fire({
+            title: 'Hapus Tagihan?',
+            text: "Data tagihan yang belum dibayar ini akan dihapus secara permanen.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Ya, Hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => { 
+            if (result.isConfirmed) window.location.href = url; 
+        });
     });
 </script>
 <?= $this->endSection() ?>

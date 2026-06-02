@@ -32,7 +32,9 @@
                         <?php elseif($b['status_booking'] == 'Menunggu DP'): ?>
                             <div class="alert alert-warning">Booking Disetujui! Silakan bayar DP 50%.</div>
                             <h2 class="fw-bold text-success mb-3">Rp <?= number_format($b['nominal_dp'], 0, ',', '.') ?></h2>
-                            <a href="<?= base_url('pay-dp/'.$b['id_booking']) ?>" class="btn btn-primary w-100 fw-bold">Bayar DP Sekarang (Simulasi)</a>
+                           <a href="<?= base_url('pay-dp/'.$b['id_booking']) ?>" class="btn btn-primary w-100 py-2 fw-bold shadow-sm">
+                             Lanjut Bayar via Midtrans <i class="fa-solid fa-arrow-right ms-1"></i>
+                            </a>
                         <?php elseif($b['status_booking'] == 'Paid'): ?>
                             <div class="alert alert-success">DP Berhasil Dibayar! Mohon tunggu, Admin sedang mengaktifkan akun Anda.</div>
                         <?php endif; ?>
