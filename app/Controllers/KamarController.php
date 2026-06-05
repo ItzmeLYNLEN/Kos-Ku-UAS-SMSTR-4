@@ -34,11 +34,20 @@ class KamarController extends BaseController
 
     public function store()
     {
-        $this->kamarModel->save([
-            'id_tipe'      => $this->request->getVar('id_tipe'),
-            'no_kamar'     => $this->request->getVar('no_kamar'),
-            'status_kamar' => $this->request->getVar('status_kamar')
+        $noKamar = $this->request->getPost('no_kamar');
+        
+        $cekKamar = $this->kamarModel->where('no_kamar', $noKamar)->first();
+        if ($cekKamar) {
+            session()->setFlashdata('pesan_error', 'Gagal! Nomor Kamar ' . $noKamar . ' sudah terdaftar.');
+            return redirect()->back()->withInput();
+        }
+
+        $this->kamarModel->insert([
+            'id_tipe'      => $this->request->getPost('id_tipe'),
+            'no_kamar'     => $noKamar,
+            'status_kamar' => $this->request->getPost('status_kamar')
         ]);
+        
         session()->setFlashdata('pesan', 'Data kamar berhasil ditambahkan.');
         return redirect()->to('/admin/kamar');
     }
@@ -54,18 +63,37 @@ class KamarController extends BaseController
 
     public function update($id)
     {
-        $this->kamarModel->save([
-            'id_kamar'     => $id,
-            'id_tipe'      => $this->request->getVar('id_tipe'),
-            'no_kamar'     => $this->request->getVar('no_kamar'),
-            'status_kamar' => $this->request->getVar('status_kamar')
+        $noKamarBaru = $this->request->getPost('no_kamar');
+        $kamarLama = $this->kamarModel->find($id);
+
+        if ($noKamarBaru !== $kamarLama['no_kamar']) {
+            $cekKamar = $this->kamarModel->where('no_kamar', $noKamarBaru)->first();
+            if ($cekKamar) {
+                session()->setFlashdata('pesan_error', 'Gagal! Nomor Kamar ' . $noKamarBaru . ' sudah digunakan.');
+                return redirect()->back()->withInput();
+            }
+        }
+
+        $this->kamarModel->update($id, [
+            'id_tipe'      => $this->request->getPost('id_tipe'),
+            'no_kamar'     => $noKamarBaru,
+            'status_kamar' => $this->request->getPost('status_kamar')
         ]);
+        
         session()->setFlashdata('pesan', 'Data kamar berhasil diubah.');
         return redirect()->to('/admin/kamar');
     }
 
     public function delete($id)
     {
+        $profilPenghuniModel = new \App\Models\ProfilPenghuniModel();
+        $adaPenghuni = $profilPenghuniModel->where('id_kamar', $id)->first();
+        
+        if ($adaPenghuni) {
+            session()->setFlashdata('pesan_error', 'Gagal menghapus! Kamar ini sedang diisi oleh penghuni.');
+            return redirect()->to('/admin/kamar');
+        }
+
         $this->kamarModel->delete($id);
         session()->setFlashdata('pesan', 'Data kamar berhasil dihapus.');
         return redirect()->to('/admin/kamar');

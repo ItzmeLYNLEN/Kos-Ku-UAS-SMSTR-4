@@ -94,13 +94,38 @@ class TipeKamarController extends BaseController
         $tipe = $this->tipeKamarModel->find($id);
 
         if ($tipe) {
+            $kamarModel = new \App\Models\KamarModel();
+            $profilPenghuniModel = new \App\Models\ProfilPenghuniModel();
+            
+            $kamarList = $kamarModel->where('id_tipe', $id)->findAll();
+            
+            if (!empty($kamarList)) {
+                foreach ($kamarList as $kamar) {
+                    $adaPenghuni = $profilPenghuniModel->where('id_kamar', $kamar['id_kamar'])->first();
+                    
+                    if ($adaPenghuni || $kamar['status_kamar'] == 'Ditempati') {
+                        session()->setFlashdata('pesan_error', 'Gagal menghapus! Tipe kamar ini tidak bisa dihapus karena masih ada kamar yang sedang diisi oleh penghuni.');
+                        return redirect()->to('/admin/tipe-kamar');
+                    }
+                }
+            }
+
+            if (!empty($kamarList)) {
+                foreach ($kamarList as $kamar) {
+                    $kamarModel->delete($kamar['id_kamar']);
+                }
+            }
+
             for ($i = 1; $i <= 3; $i++) {
                 if (!empty($tipe['foto_' . $i]) && file_exists(ROOTPATH . 'public/uploads/kamar/' . $tipe['foto_' . $i])) {
                     unlink(ROOTPATH . 'public/uploads/kamar/' . $tipe['foto_' . $i]);
                 }
             }
+            
             $this->tipeKamarModel->delete($id);
-            session()->setFlashdata('pesan', 'Data tipe kamar berhasil dihapus.');
+            session()->setFlashdata('pesan', 'Data tipe kamar beserta seluruh data kamar terkait berhasil dihapus.');
+        } else {
+            session()->setFlashdata('pesan_error', 'Data tipe kamar tidak ditemukan.');
         }
 
         return redirect()->to('/admin/tipe-kamar');

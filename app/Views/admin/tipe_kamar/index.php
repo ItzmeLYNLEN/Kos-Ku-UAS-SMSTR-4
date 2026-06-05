@@ -60,6 +60,14 @@ Kelola Tipe Kamar - Si-Kos
         });
     <?php endif; ?>
 
+    <?php if(session()->getFlashdata('pesan_error')): ?>
+        Swal.fire({
+            icon: 'error',
+            title: 'Tidak Bisa Dihapus!',
+            text: '<?= session()->getFlashdata('pesan_error') ?>'
+        });
+    <?php endif; ?>
+
     const tombolHapus = document.querySelectorAll('.tombol-hapus');
     tombolHapus.forEach(tombol => {
         tombol.addEventListener('click', function(e) {
