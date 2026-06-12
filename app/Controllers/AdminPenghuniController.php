@@ -35,55 +35,64 @@ class AdminPenghuniController extends BaseController
         return view('admin/penghuni/create', $data);
     }
 
+    public function delete($id)
+    {
+        $profil = $this->profilModel->find($id);
+        
+        $this->kamarModel->where('id_pengguna', $profil['id_pengguna'])
+                         ->set(['status_kamar' => 'Tersedia', 'id_pengguna' => null])
+                         ->update();
+
+        $this->profilModel->delete($id);
+        $this->penggunaModel->delete($profil['id_pengguna']);
+
+        session()->setFlashdata('pesan', 'Data penghuni berhasil dihapus dan kamar dikosongkan.');
+        return redirect()->to('/admin/penghuni');
+    }
+
     public function store()
     {
         $db = \Config\Database::connect();
         $db->transStart(); 
 
-        
-        $this->penggunaModel->insert([
-            'username'       => $this->request->getVar('no_wa'),
-            'password'       => password_hash($this->request->getVar('password'), PASSWORD_BCRYPT),
-            'role'           => 'Penghuni',
-            'is_first_login' => 1
-        ]);
+        $no_wa = $this->request->getVar('no_wa');
+        $id_kamar = $this->request->getVar('id_kamar');
 
-        $id_pengguna = $this->penggunaModel->getInsertID();
+        $penggunaLama = $this->penggunaModel->where('username', $no_wa)->first();
 
-        
-        $this->profilModel->insert([
-            'id_pengguna'  => $id_pengguna,
-            'id_kamar'     => $this->request->getVar('id_kamar'),
-            'nama_lengkap' => $this->request->getVar('nama_lengkap'),
-            'no_wa'        => $this->request->getVar('no_wa')
-        ]);
+        if ($penggunaLama) {
+            $id_pengguna = $penggunaLama['id_pengguna'];
+            
+        } else {
+            $this->penggunaModel->insert([
+                'username'       => $no_wa,
+                'password'       => password_hash($this->request->getVar('password'), PASSWORD_BCRYPT),
+                'role'           => 'Penghuni',
+                'is_first_login' => 1
+            ]);
 
-       
-        $this->kamarModel->update($this->request->getVar('id_kamar'), [
-            'status_kamar' => 'Terisi'
+            $id_pengguna = $this->penggunaModel->getInsertID();
+
+            $this->profilModel->insert([
+                'id_pengguna'  => $id_pengguna,
+                'nama_lengkap' => $this->request->getVar('nama_lengkap'),
+                'no_wa'        => $no_wa
+            ]);
+        }
+
+        $this->kamarModel->update($id_kamar, [
+            'status_kamar' => 'Terisi',
+            'id_pengguna'  => $id_pengguna
         ]);
 
         $db->transComplete(); 
 
-        
         if ($db->transStatus() === false) {
-            session()->setFlashdata('pesan_error', 'Gagal menyimpan data! Pastikan kolom di database sudah sesuai.');
+            session()->setFlashdata('pesan_error', 'Gagal menyimpan data ke database.');
         } else {
-            session()->setFlashdata('pesan', 'Data penghuni dan akun berhasil dibuat.');
+            session()->setFlashdata('pesan', 'Kamar berhasil dialokasikan ke penghuni.');
         }
 
-        return redirect()->to('/admin/penghuni');
-    }
-
-    public function delete($id_profil)
-    {
-        $profil = $this->profilModel->find($id_profil);
-        
-        $this->kamarModel->update($profil['id_kamar'], ['status_kamar' => 'Tersedia']);
-        $this->penggunaModel->delete($profil['id_pengguna']);
-        $this->profilModel->delete($id_profil);
-
-        session()->setFlashdata('pesan', 'Data penghuni berhasil dihapus dan kamar dikosongkan.');
         return redirect()->to('/admin/penghuni');
     }
 }

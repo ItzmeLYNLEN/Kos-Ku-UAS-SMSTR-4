@@ -20,11 +20,7 @@ class PenghuniProfilController extends BaseController
     {
         $id_pengguna = session()->get('id_pengguna');
         
-        $profil = $this->profilModel->select('tb_profil_penghuni.*, tb_kamar.no_kamar, tb_tipe_kamar.nama_tipe')
-                                    ->join('tb_kamar', 'tb_kamar.id_kamar = tb_profil_penghuni.id_kamar', 'left')
-                                    ->join('tb_tipe_kamar', 'tb_tipe_kamar.id_tipe = tb_kamar.id_tipe', 'left')
-                                    ->where('tb_profil_penghuni.id_pengguna', $id_pengguna)
-                                    ->first();
+        $profil = $this->profilModel->getProfilByPengguna($id_pengguna);
 
         $pengguna = $this->penggunaModel->find($id_pengguna);
 

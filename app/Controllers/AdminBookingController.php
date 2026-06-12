@@ -82,34 +82,39 @@ class AdminBookingController extends BaseController
                                   ->where('id_kamar', $booking['id_kamar'])
                                   ->first();
 
-        $password_plain = 'kos' . rand(1000, 9999);
-        
         $penggunaModel = new PenggunaModel();
-        $penggunaModel->insert([
-            'username' => $booking['no_wa'],
-            'password' => password_hash($password_plain, PASSWORD_BCRYPT),
-            'role'     => 'Penghuni'
-        ]);
-
-        $id_pengguna = $penggunaModel->getInsertID();
         $profilModel = new ProfilPenghuniModel();
-        $profilModel->insert([
-            'id_pengguna'  => $id_pengguna,
-            'id_kamar'     => $booking['id_kamar'],
-            'nama_lengkap' => $booking['nama_calon'],
-            'no_wa'        => $booking['no_wa'],
-            'email'        => $booking['email']
-        ]);
 
-        $this->kamarModel->update($booking['id_kamar'], ['status_kamar' => 'Terisi']);
+        $penggunaLama = $penggunaModel->where('username', $booking['no_wa'])->first();
+
+        if ($penggunaLama) {
+            $id_pengguna = $penggunaLama['id_pengguna'];
+            $is_new_user = false;
+        } else {
+            $password_plain = 'kos' . rand(1000, 9999);
+            $penggunaModel->insert([
+                'username' => $booking['no_wa'],
+                'password' => password_hash($password_plain, PASSWORD_BCRYPT),
+                'role'     => 'Penghuni'
+            ]);
+
+            $id_pengguna = $penggunaModel->getInsertID();
+            $profilModel->insert([
+                'id_pengguna'  => $id_pengguna,
+                'nama_lengkap' => $booking['nama_calon'],
+                'no_wa'        => $booking['no_wa'],
+                'email'        => $booking['email']
+            ]);
+            $is_new_user = true;
+        }
+
+        $this->kamarModel->update($booking['id_kamar'], [
+            'status_kamar' => 'Terisi',
+            'id_pengguna'  => $id_pengguna 
+        ]);
 
         $tagihanModel = new TagihanModel();
-        $bulanIndo = [
-            'January' => 'Januari', 'February' => 'Februari', 'March' => 'Maret',
-            'April' => 'April', 'May' => 'Mei', 'June' => 'Juni',
-            'July' => 'Juli', 'August' => 'Agustus', 'September' => 'September',
-            'October' => 'Oktober', 'November' => 'November', 'December' => 'Desember'
-        ];
+        $bulanIndo = ['January'=>'Januari','February'=>'Februari','March'=>'Maret','April'=>'April','May'=>'Mei','June'=>'Juni','July'=>'Juli','August'=>'Agustus','September'=>'September','October'=>'Oktober','November'=>'November','December'=>'Desember'];
         $bulan = $bulanIndo[date('F')];
         $tahun = date('Y');
 
@@ -123,7 +128,6 @@ class AdminBookingController extends BaseController
         ]);
 
         $sisa = $kamar['harga_dasar'] - $booking['nominal_dp'];
-        
         if ($sisa > 0) {
             $tagihanModel->insert([
                 'id_pengguna'   => $id_pengguna,
@@ -137,39 +141,33 @@ class AdminBookingController extends BaseController
 
         $no_kamar_asli = $kamar['no_kamar'];
 
-        $calonLain = $this->bookingModel->where('id_kamar', $booking['id_kamar'])
-                                         ->where('id_booking !=', $id)
-                                         ->findAll();
-
+        $calonLain = $this->bookingModel->where('id_kamar', $booking['id_kamar'])->where('id_booking !=', $id)->findAll();
         foreach ($calonLain as $cl) {
             $email = \Config\Services::email();
             $email->setTo($cl['email']);
             $email->setSubject('Informasi Booking Kamar Si-Kos');
-            
-            $pesanGagal = "Halo <b>" . $cl['nama_calon'] . "</b>,<br><br>";
-            $pesanGagal .= "Kami memohon maaf, kamar yang Anda ajukan (<b>Kamar No. " . $no_kamar_asli . "</b>) saat ini sudah resmi terisi oleh pemesan lain yang lebih dulu menyelesaikan administrasi.<br><br>";
-            $pesanGagal .= "Silakan cek katalog kami kembali untuk kamar lainnya yang tersedia.";
-            
+            $pesanGagal = "Halo <b>" . $cl['nama_calon'] . "</b>,<br><br>Mohon maaf, <b>Kamar No. " . $no_kamar_asli . "</b> sudah terisi oleh pemesan lain.<br>Silakan cek katalog kami kembali.";
             $email->setMessage($pesanGagal);
             $email->send();
         }
 
-        $this->bookingModel->where('id_kamar', $booking['id_kamar'])
-                           ->where('id_booking !=', $id)
-                           ->set(['status_booking' => 'Dibatalkan (Penuh)'])
-                           ->update();
-
+        $this->bookingModel->where('id_kamar', $booking['id_kamar'])->where('id_booking !=', $id)->set(['status_booking' => 'Dibatalkan (Penuh)'])->update();
         $this->bookingModel->where('id_booking', $id)->delete(null, true);
         
         $db->transComplete();
 
-        $emailSukses = \Config\Services::email();
-        $emailSukses->setTo($booking['email']);
-        $emailSukses->setSubject('Akun Si-Kos Aktif');
-        $emailSukses->setMessage("Akun Anda aktif. Username: " . $booking['no_wa'] . " Password: " . $password_plain);
-        $emailSukses->send();
+        $emailNotif = \Config\Services::email();
+        $emailNotif->setTo($booking['email']);
+        if ($is_new_user) {
+            $emailNotif->setSubject('Akun Si-Kos Aktif');
+            $emailNotif->setMessage("Akun Anda aktif. Username: " . $booking['no_wa'] . " Password: " . $password_plain);
+        } else {
+            $emailNotif->setSubject('Penambahan Kamar Si-Kos Berhasil');
+            $emailNotif->setMessage("Halo, penambahan Kamar No. " . $no_kamar_asli . " berhasil diproses dan sudah masuk ke dalam akun Si-Kos Anda saat ini.");
+        }
+        $emailNotif->send();
 
-        session()->setFlashdata('pesan', 'Akun berhasil dibuat dan data booking telah dihapus otomatis.');
+        session()->setFlashdata('pesan', 'Kamar berhasil dialokasikan. Email notifikasi telah dikirim.');
         return redirect()->to('/admin/booking');
     }
 

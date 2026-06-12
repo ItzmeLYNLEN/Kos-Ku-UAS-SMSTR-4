@@ -8,7 +8,7 @@ class KamarModel extends Model
 {
     protected $table = 'tb_kamar';
     protected $primaryKey = 'id_kamar';
-    protected $allowedFields = ['id_tipe', 'no_kamar', 'status_kamar'];
+    protected $allowedFields = ['id_tipe', 'id_pengguna', 'no_kamar', 'status_kamar'];
     protected $useTimestamps = true;
     protected $useSoftDeletes = true;
     protected $deletedField  = 'deleted_at';

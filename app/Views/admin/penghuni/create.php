@@ -20,6 +20,7 @@ Tambah Penghuni Baru - Si-Kos
                     <div class="mb-3">
                         <label class="form-label">Nomor WhatsApp (Akan menjadi Username)</label>
                         <input type="number" class="form-control" name="no_wa" placeholder="0812..." required>
+                        <div class="form-text text-muted">Jika memasukkan No WA penghuni lama, sistem otomatis akan menambahkan kamar ke akun mereka tanpa mereset password.</div>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Password Default</label>
